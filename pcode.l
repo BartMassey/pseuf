@@ -8,7 +8,7 @@
     static char * string_save(void);
     int nest = 0;
     int white = 1;
-    char *strval;
+    char *strval = 0;
     int intval;
 %} 
     
@@ -150,6 +150,8 @@ main(int argc, char **argv) {
 	for (xp = output_markdown; xp->token != 0; xp++) {
 	    if (token == xp->token) {
 		xp->op();
+		if (strval)
+		    free(strval);
 		break;
 	    }
 	}
