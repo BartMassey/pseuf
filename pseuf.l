@@ -1,5 +1,5 @@
 %{
-#   include "pcode.h"
+#   include "pseuf.h"
 
     static char *save_string(char *);
     static int is_keyword(char *);
