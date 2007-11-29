@@ -9,7 +9,6 @@
 #define T_STRING 9
 
 extern int nest;
-extern int white;
 extern char *strval;
 extern int intval;
 

@@ -6,8 +6,8 @@
     static void string_init(void);
     static void string_add(char);
     static char * string_save(void);
+    static int white = 1;
     int nest = 0;
-    int white = 1;
     char *strval = 0;
     int intval;
 %} 

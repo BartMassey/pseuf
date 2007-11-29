@@ -40,8 +40,10 @@ op_stuff(void)
 static void
 op_open_expr(void)
 {
-    if (nest > 1)
-	printf("(");
+    if (nest > 1) {
+	print_word("%s", "(");
+	start = 1;
+    }
 }
 
 static void
@@ -49,6 +51,7 @@ op_close_expr(void)
 {
     if (nest > 0)
 	printf(")");
+    start = 0;
 }
 
 static void
