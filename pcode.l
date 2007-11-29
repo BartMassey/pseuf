@@ -32,9 +32,9 @@
     /* do nothing */;
 }
 
-<EXPR>[_a-zA-Z][-_a-zA-Z0-9]* {
+[_a-zA-Z][-_a-zA-Z0-9]* {
     strval = save_string(yytext);
-    if (YYSTATE == EXPR)
+    if (YY_START == EXPR)
 	return T_IDENT;
     if (is_keyword(yytext))
 	return T_KEYWORD;

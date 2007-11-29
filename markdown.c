@@ -70,4 +70,3 @@ xlate output_markdown[] = {
     {T_STRING, op_stuff},
     {0, 0}
 };
-

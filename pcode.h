@@ -1,5 +1,5 @@
 #define T_INDENT 1
-#define T_IDENT 3
+#define T_IDENT 2
 #define T_KEYWORD 3
 #define T_WORD 4
 #define T_LP 5
