@@ -1,0 +1,9 @@
+to qsort an array a:
+    n <- dim a
+    if n = 1 then return a
+    p <- n div 2
+    for i from 1 to p - 1 do
+	if a[i] > a[p] then
+	    exchange a[i] with a[p]
+    qsort a[1 .. p]
+    qsort a[p + 1 .. n]
