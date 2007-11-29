@@ -21,8 +21,7 @@ typedef struct {
 } xlate_t;
 
 typedef struct {
-    op_t begin;
-    op_t end;
+    op_t begin, end, bol;
     xlate_t *xlate;
 } output_t;
 

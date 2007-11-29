@@ -16,7 +16,7 @@
 
 %%
 
-^[ \t]+ {
+^[ \t]* {
     int i;
     int indent = yyleng;
     for (i = 0; i < yyleng; i++)
@@ -140,6 +140,7 @@ main(int argc, char **argv) {
     int token;
     xlate_t *xp;
     output_markdown.begin();
+    output_markdown.bol();
     while ((token = yylex()) != 0) {
 	for (xp = output_markdown.xlate; xp->token != 0; xp++) {
 	    if (token == xp->token) {
@@ -151,6 +152,8 @@ main(int argc, char **argv) {
 	    }
 	}
 	assert(xp->token != 0);
+	if (token == T_NEWLINE)
+	    output_markdown.bol();
     }
     output_markdown.end();
     return 0;

@@ -14,10 +14,16 @@ op_end(void)
 }
 
 static void
+op_bol(void)
+{
+    printf("    ");
+}
+
+static void
 op_indent(void)
 {
     int i;
-    for (i = 4; i < intval + 4; i++)
+    for (i = 0; i < intval; i++)
 	printf(" ");
 }
 
@@ -82,5 +88,6 @@ static xlate_t xlate[] = {
 output_t output_markdown = {
     .begin = op_begin,
     .end = op_end,
+    .bol = op_bol,
     .xlate = xlate
 };
