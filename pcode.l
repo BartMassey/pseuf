@@ -13,7 +13,6 @@
 %} 
     
 %x STRING
-%s EXPR
 %option noyywrap
 
 %%
@@ -34,7 +33,7 @@
 
 [_a-zA-Z][-_a-zA-Z0-9]* {
     strval = save_string(yytext);
-    if (YY_START == EXPR)
+    if (nest > 0)
 	return T_IDENT;
     if (is_keyword(yytext))
 	return T_KEYWORD;
@@ -42,7 +41,6 @@
 }
 
 "(" {
-    BEGIN(EXPR);
     nest++;
     return T_LP;
 }
@@ -50,8 +48,6 @@
 ")" {
     if (nest > 0)
 	--nest;
-    if (nest == 0)
-	BEGIN(0);
     return T_RP;
 }
 
