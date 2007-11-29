@@ -113,6 +113,7 @@ static char *
 save_string(char *string) {
     char *save = malloc(strlen(string));
     assert(save);
+    strcpy(save, string);
     return save;
 }
 
