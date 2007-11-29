@@ -27,13 +27,13 @@
     return T_INDENT;
 }
 
-<STRING>"\"" {
+<STRING>\" {
     strval = string_save();
     BEGIN(0);
     return T_STRING;
 }
 
-<STRING>"\\". {
+<STRING>\\. {
     string_add(yytext[0]);
     white = 0;
 }
@@ -59,15 +59,15 @@
     return T_WORD;
 }
 
-"(" {
-    nest++;
-    return T_LP;
-}
-
-"\"" {
+\" {
     BEGIN(STRING);
     string_init();
     white = 1;
+}
+
+"(" {
+    nest++;
+    return T_LP;
 }
 
 ")" {
@@ -84,7 +84,7 @@
     return T_NEWLINE;
 }
 
-[^ \t\n]+ {
+[^\"\(\) \t\n]+ {
     strval = save_string(yytext);
     return T_STUFF;
 }
