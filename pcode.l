@@ -1,28 +1,20 @@
 %{
-#define T_INDENT 1
-#define T_WHITESPACE 2
-#define T_IDENT 3
-#define T_KEYWORD 3
-#define T_WORD 4
-#define T_LP 5
-#define T_RP 6
-#define T_NEWLINE 7
-#define T_STUFF 8
+#   include "pcode.h"
 
-    extern char *save_string(char *);
-    extern int is_keyword(char *);
-    extern void string_init(void);
-    extern void string_add(char);
-    extern void string_save(void);
-    extern int indent;
-    extern int white;
-
-    static char *strval;
-    static int intval;
+    static char *save_string(char *);
+    static int is_keyword(char *);
+    static void string_init(void);
+    static void string_add(char);
+    static char * string_save(void);
+    int nest = 0;
+    int white = 1;
+    char *strval;
+    int intval;
 %} 
     
 %x STRING
 %s EXPR
+%option noyywrap
 
 %%
 
@@ -51,14 +43,14 @@
 
 "(" {
     BEGIN(EXPR);
-    indent++;
+    nest++;
     return T_LP;
 }
 
 ")" {
-    if (indent > 0)
-	--indent;
-    if (indent == 0)
+    if (nest > 0)
+	--nest;
+    if (nest == 0)
 	BEGIN(0);
     return T_RP;
 }
@@ -91,8 +83,9 @@
 }
 
 <STRING>"\"" {
-    string_save();
+    strval = string_save();
     BEGIN(0);
+    return T_STRING;
 }
 
 <STRING>. {
@@ -110,3 +103,69 @@
 }
 
 %%
+
+#include <assert.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+static char *
+save_string(char *string) {
+    char *save = malloc(strlen(string));
+    assert(save);
+    return save;
+}
+
+/* XXX fixme --- this should be dynamic */
+#define SAVELEN (16*1024)
+
+static char save[SAVELEN];
+static char *savep;
+
+static void
+string_init(void) {
+    savep = save;
+}
+
+static void
+string_add(char c) {
+    assert(savep < save + SAVELEN - 1);
+    *savep++ = c;
+}
+
+static char *
+string_save(void) {
+    assert(savep < save + SAVELEN - 1);
+    *savep++ = '\0';
+    return save_string(save);
+}
+
+static char *keywords[] = {
+    "to", "if", "else", "do", "in", "for", "while", 0
+};
+
+static int
+is_keyword(char *word) {
+    char **kw;
+    for (kw = keywords; *kw; kw++)
+	if (!strcmp(*kw, word))
+	    return 1;
+    return 0;
+}
+
+
+int
+main(int argc, char **argv) {
+    int token;
+    xlate *xp;
+    while ((token = yylex()) != 0) {
+	for (xp = output_markdown; xp->token != 0; xp++) {
+	    if (token == xp->token) {
+		xp->op();
+		break;
+	    }
+	}
+	assert(xp->token != 0);
+    }
+    return 0;
+}
