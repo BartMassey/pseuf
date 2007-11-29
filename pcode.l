@@ -14,6 +14,8 @@
     extern void string_init(void);
     extern void string_add(char);
     extern void string_save(void);
+    extern int indent;
+    extern int white;
 
     static char *strval;
     static int intval;
@@ -26,8 +28,8 @@
 
 ^[ \t]* {
     int i;
-    int indent = yylen;
-    for (i = 0; i < yylen; i++)
+    int indent = yyleng;
+    for (i = 0; i < yyleng; i++)
 	if (yytext[i] == '\t')
 	    indent += 7;
     intval = indent;
@@ -38,7 +40,7 @@
     /* do nothing */;
 }
 
-<EXPR> [_a-zA-Z][-_a-zA-Z0-9]* {
+<EXPR>[_a-zA-Z][-_a-zA-Z0-9]* {
     strval = save_string(yytext);
     if (YYSTATE == EXPR)
 	return T_IDENT;
@@ -77,7 +79,7 @@
 }
 
 <STRING>"\\\\" {
-    string_add('\');
+    string_add('\\');
     white = 0;
 }
 
