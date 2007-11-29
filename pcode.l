@@ -138,9 +138,10 @@ is_keyword(char *word) {
 int
 main(int argc, char **argv) {
     int token;
-    xlate *xp;
+    xlate_t *xp;
+    output_markdown.begin();
     while ((token = yylex()) != 0) {
-	for (xp = output_markdown; xp->token != 0; xp++) {
+	for (xp = output_markdown.xlate; xp->token != 0; xp++) {
 	    if (token == xp->token) {
 		xp->op();
 		if (strval)
@@ -151,5 +152,6 @@ main(int argc, char **argv) {
 	}
 	assert(xp->token != 0);
     }
+    output_markdown.end();
     return 0;
 }

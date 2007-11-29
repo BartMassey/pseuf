@@ -2,10 +2,22 @@
 #include "pcode.h"
 
 static void
+op_begin(void)
+{
+    printf("\n");
+}
+
+static void
+op_end(void)
+{
+    printf("\n");
+}
+
+static void
 op_indent(void)
 {
     int i;
-    for (i = 0; i < intval; i++)
+    for (i = 4; i < intval + 4; i++)
 	printf(" ");
 }
 
@@ -53,7 +65,7 @@ op_white(void)
     printf(" ");
 }
 
-xlate output_markdown[] = {
+static xlate_t xlate[] = {
     {T_INDENT, op_indent},
     {T_IDENT, op_ident},
     {T_KEYWORD, op_keyword},
@@ -65,4 +77,10 @@ xlate output_markdown[] = {
     {T_STRING, op_stuff},
     {T_WHITE, op_white},
     {0, 0}
+};
+
+output_t output_markdown = {
+    .begin = op_begin,
+    .end = op_end,
+    .xlate = xlate
 };

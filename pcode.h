@@ -13,9 +13,17 @@ extern int nest;
 extern char *strval;
 extern int intval;
 
+typedef void (*op_t)();
+
 typedef struct {
     int token;
-    void (*op)();
-} xlate;
+    op_t op;
+} xlate_t;
 
-extern xlate output_markdown[];
+typedef struct {
+    op_t begin;
+    op_t end;
+    xlate_t *xlate;
+} output_t;
+
+extern output_t output_markdown;
