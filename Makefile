@@ -1,10 +1,10 @@
-pcode: pcode.o markdown.o
-	$(CC) $(CFLAGS) -o pcode pcode.o markdown.o
+pseuf: pseuf.o markdown.o
+	$(CC) $(CFLAGS) -o pseuf pseuf.o markdown.o
 
-pcode.c: pcode.l
-	flex -o pcode.c pcode.l
+pseuf.c: pseuf.l
+	flex -o pseuf.c pseuf.l
 
-pcode.o markdown.o: pcode.h
+pseuf.o markdown.o: pseuf.h
 
 clean:
-	-rm -f markdown.o pcode.o pcode pcode.c
+	-rm -f markdown.o pseuf.o pseuf pseuf.c
