@@ -98,7 +98,7 @@
 
 static char *
 save_string(char *string) {
-    char *save = malloc(strlen(string));
+    char *save = malloc(strlen(string) + 1);
     assert(save);
     strcpy(save, string);
     return save;
@@ -152,6 +152,7 @@ main(int argc, char **argv) {
 		xp->op();
 		if (strval)
 		    free(strval);
+		strval = 0;
 		break;
 	    }
 	}
