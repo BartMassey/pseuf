@@ -7,6 +7,7 @@
 #define T_NEWLINE 7
 #define T_STUFF 8
 #define T_STRING 9
+#define T_WHITE 10
 
 extern int nest;
 extern char *strval;

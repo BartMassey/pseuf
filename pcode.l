@@ -6,7 +6,6 @@
     static void string_init(void);
     static void string_add(char);
     static char * string_save(void);
-    static int white = 1;
     int nest = 0;
     char *strval = 0;
     int intval;
@@ -35,19 +34,14 @@
 
 <STRING>\\. {
     string_add(yytext[0]);
-    white = 0;
 }
 
-<STRING>[ \t\n] {
-    if (!white) {
-        string_add(' ');
-        white = 1;
-    }
+<STRING>[ \t\n]* {
+    string_add(' ');
 }
 
 <STRING>. {
     string_add(yytext[0]);
-    white = 0;
 }
 
 [_a-zA-Z][-_a-zA-Z0-9]* {
@@ -60,9 +54,8 @@
 }
 
 \" {
-    BEGIN(STRING);
     string_init();
-    white = 1;
+    BEGIN(STRING);
 }
 
 "(" {
@@ -77,7 +70,7 @@
 }
 
 [ \t]+ {
-    /* do nothing */;
+    return T_WHITE;
 }
 
 \n {
