@@ -17,7 +17,7 @@
 
 %%
 
-^[ \t]* {
+^[ \t]+ {
     int i;
     int indent = yyleng;
     for (i = 0; i < yyleng; i++)
@@ -27,8 +27,27 @@
     return T_INDENT;
 }
 
-[ \t]+ {
-    /* do nothing */;
+<STRING>"\"" {
+    strval = string_save();
+    BEGIN(0);
+    return T_STRING;
+}
+
+<STRING>"\\". {
+    string_add(yytext[0]);
+    white = 0;
+}
+
+<STRING>[ \t\n] {
+    if (!white) {
+        string_add(' ');
+        white = 1;
+    }
+}
+
+<STRING>. {
+    string_add(yytext[0]);
+    white = 0;
 }
 
 [_a-zA-Z][-_a-zA-Z0-9]* {
@@ -45,48 +64,20 @@
     return T_LP;
 }
 
-")" {
-    if (nest > 0)
-	--nest;
-    return T_RP;
-}
-
 "\"" {
     BEGIN(STRING);
     string_init();
     white = 1;
 }
 
-<STRING>"\\\"" {
-    string_add('"');
-    white = 0;
+")" {
+    if (nest > 0)
+	--nest;
+    return T_RP;
 }
 
-<STRING>"\\"[ \t\n] {
-    string_add(yytext[0]);
-}
-
-<STRING>"\\\\" {
-    string_add('\\');
-    white = 0;
-}
-
-<STRING>[ \t\n] {
-    if (!white) {
-        string_add(' ');
-        white = 1;
-    }
-}
-
-<STRING>"\"" {
-    strval = string_save();
-    BEGIN(0);
-    return T_STRING;
-}
-
-<STRING>. {
-    string_add(yytext[0]);
-    white = 0;
+[ \t]+ {
+    /* do nothing */;
 }
 
 \n {
