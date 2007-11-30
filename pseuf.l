@@ -8,6 +8,7 @@
  */
 
 %{
+#   include <stdio.h>
 #   include "pseuf.h"
 
     static char *save_string(char *);
@@ -17,6 +18,7 @@
     static char * string_save(void);
     int line = 1;
     char *filename = "<stdin>";
+    FILE *outfile;
     int nest = 0;
     char *strval = 0;
     int intval;
@@ -163,8 +165,8 @@ is_keyword(char *word) {
 }
 
 
-int
-main(int argc, char **argv) {
+static void
+format_file(FILE *f) {
     int token;
     xlate_t *xp;
     output_markdown.begin();
@@ -184,5 +186,61 @@ main(int argc, char **argv) {
 	    output_markdown.bol();
     }
     output_markdown.end();
+}
+
+
+static char *
+basename(char *name, char *extension) {
+    char *suffp = rindex(name, '.');
+    if (!suffp)
+	return name;
+    if (!strcmp(suffp + 1, extension)) {
+	char *result = save_string(name);
+	result[strlen(result) - strlen(extension)] = '\0';
+	return result;
+    }
+    return 0;
+}
+
+int
+main(int argc, char **argv) {
+    if (argc <= 1) {
+	outfile = stdout;
+	format_file(stdin);
+    } else {
+	int i;
+	for (i = 1; i < argc; i++) {
+	    FILE *f;
+	    char *outfilename;
+	    char *s;
+	    filename = argv[i];
+	    s = basename(filename, "pseu");
+	    if (!s) {
+		fprintf(stderr, "%s: bad file extension\n", filename);
+		exit(1);
+	    }
+	    f = fopen(filename, "r");
+	    if (!f) {
+		perror(filename);
+		exit(1);
+	    }
+	    outfilename = malloc(strlen(s) +
+				 strlen(output_markdown.extension) + 1);
+	    if (!outfilename) {
+		fprintf(stderr, "%s: out of memory\n", filename);
+		exit(1);
+	    }
+	    strcpy(outfilename, s);
+	    strcat(outfilename, output_markdown.extension);
+	    free(s);
+	    outfile = fopen(outfilename, "w");
+	    if (!outfile) {
+		perror(outfilename);
+		exit(1);
+	    }
+	    format_file(f);
+	    free(outfilename);
+	}
+    }
     return 0;
 }

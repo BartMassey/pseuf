@@ -23,6 +23,7 @@ extern char *strval;
 extern int intval;
 extern int line;
 extern char *filename;
+extern FILE *outfile;
 
 extern void
 error(int cond, char *fmt, ...);
@@ -35,6 +36,7 @@ typedef struct {
 } xlate_t;
 
 typedef struct {
+    char *extension;
     op_t begin, end, bol;
     xlate_t *xlate;
 } output_t;

@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include "pseuf.h"
 
+static int out_line = 0;
+
 static void
 op_begin(void)
 {
@@ -25,6 +27,7 @@ op_end(void)
 static void
 op_bol(void)
 {
+    out_line++;
     printf("    ");
 }
 
@@ -95,6 +98,7 @@ static xlate_t xlate[] = {
 };
 
 output_t output_markdown = {
+    .extension = ".mdwn",
     .begin = op_begin,
     .end = op_end,
     .bol = op_bol,
