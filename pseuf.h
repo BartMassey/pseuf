@@ -28,6 +28,9 @@ extern char *filename;
 extern FILE *outfile;
 
 extern void
+warning(char *fmt, ...);
+
+extern void
 error(int cond, char *fmt, ...);
 
 typedef void (*op_t)();

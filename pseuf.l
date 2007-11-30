@@ -128,28 +128,51 @@ static char *keywords[] = {
 };
 
 
+static void
+showmsg(char *prefix, char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    fprintf(stderr, "%s:%d: ", filename, line);
+    if (prefix)
+	fprintf(stderr, "%s: ", prefix);
+    vfprintf(stderr, fmt, ap);
+    fprintf(stderr, "\n");
+}
+    
+void
+warning(char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    showmsg("warning", fmt, ap);
+}
+
+
 void
 error(int cond, char *fmt, ...)
 {
     if (cond) {
 	va_list ap;
 	va_start(ap, fmt);
-	fprintf(stderr, "%s:%d: ", filename, line);
-	vfprintf(stderr, fmt, ap);
-	fprintf(stderr, "\n");
+	showmsg(0, fmt, ap);
 	exit(1);
     }
 }
 
 
 static char *
-get_id(int token) {
-    int t = yylex();
-    if (t == T_WHITE)
-	t = yylex();
-    if (t != token)
-	return 0;
-    return strval;
+get_id(int *token) {
+    *token = yylex();
+    if (*token == T_WHITE)
+	*token = yylex();
+    switch (*token) {
+    case T_KEYWORD:
+    case T_IDENT:
+    case T_WORD:
+	return strval;
+    }
+    return 0;
 }
 
 
@@ -161,10 +184,15 @@ typedef struct {
 
 static void
 d_plain(void) {
-    char *id = get_id(T_KEYWORD);
+    int idt;
+    char *id = get_id(&idt);
     int nl = yylex();
     char **toclear, **last;
     error(!id || nl != T_NEWLINE, "%%plain directive syntax error");
+    if (idt != T_KEYWORD) {
+	warning("%%plain directive on non-keyword %s", id);
+	return;
+    }
     for (toclear = keywords; *toclear; toclear++) {
 	if (!strcmp(*toclear, id)) {
 	    for (last = keywords; *last && *(last + 1); last++)

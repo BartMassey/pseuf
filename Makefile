@@ -5,6 +5,8 @@
 # Please see the file COPYING in the source
 # distribution of this software for license terms.
 
+CFLAGS = -g -Wall
+
 pseuf: pseuf.o markdown.o
 	$(CC) $(CFLAGS) -o pseuf pseuf.o markdown.o
 
