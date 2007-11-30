@@ -21,6 +21,11 @@
 extern int nest;
 extern char *strval;
 extern int intval;
+extern int line;
+extern char *filename;
+
+extern void
+error(int cond, char *fmt, ...);
 
 typedef void (*op_t)();
 

@@ -15,6 +15,8 @@
     static void string_init(void);
     static void string_add(char);
     static char * string_save(void);
+    int line = 1;
+    char *filename = "<stdin>";
     int nest = 0;
     char *strval = 0;
     int intval;
@@ -83,6 +85,7 @@
 }
 
 \n {
+    line++;
     return T_NEWLINE;
 }
 
@@ -97,11 +100,27 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdarg.h>
+
+
+void
+error(int cond, char *fmt, ...)
+{
+    if (cond) {
+	va_list ap;
+	va_start(ap, fmt);
+	fprintf(stderr, "%s:%d: ", filename, line);
+	vfprintf(stderr, fmt, ap);
+	fprintf(stderr, "\n");
+	exit(1);
+    }
+}
+
 
 static char *
 save_string(char *string) {
     char *save = malloc(strlen(string) + 1);
-    assert(save);
+    error(!save, "out of memory");
     strcpy(save, string);
     return save;
 }
@@ -119,13 +138,13 @@ string_init(void) {
 
 static void
 string_add(char c) {
-    assert(savep < save + SAVELEN - 1);
+    error(savep >= save + SAVELEN - 1, "out of memory");
     *savep++ = c;
 }
 
 static char *
 string_save(void) {
-    assert(savep < save + SAVELEN - 1);
+    error(savep >= save + SAVELEN - 1, "out of memory");
     *savep++ = '\0';
     return save_string(save);
 }
