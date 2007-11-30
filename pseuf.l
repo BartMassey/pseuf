@@ -16,6 +16,7 @@
     static void string_init(void);
     static void string_add(char);
     static char * string_save(void);
+    static int lookup_directive(char *);
     int line = 1;
     char *filename = "<stdin>";
     FILE *outfile;
@@ -25,9 +26,25 @@
 %} 
     
 %x STRING
+%x DIRECTIVE
 %option noyywrap
 
+ID [_a-zA-Z][-_a-zA-Z0-9]*
+
 %%
+
+^\%/.* {
+    BEGIN(DIRECTIVE);
+}
+
+<DIRECTIVE>[ \t]+   /* do nothing */;
+
+<DIRECTIVE>{ID} {
+    int token = lookup_directive(yytext);
+    error(token == 0, "unknown directive %s", yytext);
+    BEGIN(0);
+    return token;
+}
 
 ^[ \t]* {
     int i;
@@ -57,7 +74,7 @@
     string_add(yytext[0]);
 }
 
-[_a-zA-Z][-_a-zA-Z0-9]* {
+{ID} {
     strval = save_string(yytext);
     if (nest > 0)
 	return T_IDENT;
@@ -118,6 +135,23 @@ error(int cond, char *fmt, ...)
     }
 }
 
+typedef struct {
+    char *name;
+    int token;
+} directive_t;
+
+directive_t directives[] = {
+    {0, 0}
+};
+
+static int
+lookup_directive(char *name) {
+    directive_t *dp;
+    for (dp = directives; dp->name; dp++)
+	if (!strcmp(name, dp->name))
+	    return dp->token;
+    return 0;
+}
 
 static char *
 save_string(char *string) {
