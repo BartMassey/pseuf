@@ -23,6 +23,7 @@
     int nest = 0;
     char *strval = 0;
     int intval;
+    op_t opval;
 %} 
     
 %x STRING
@@ -122,6 +123,11 @@ ID [_a-zA-Z][-_a-zA-Z0-9]*
 #include <stdarg.h>
 
 
+static char *keywords[] = {
+    "to", "if", "else", "do", "in", "for", "while", 0
+};
+
+
 void
 error(int cond, char *fmt, ...)
 {
@@ -135,21 +141,57 @@ error(int cond, char *fmt, ...)
     }
 }
 
+
+static char *
+get_id(int token) {
+    int t = yylex();
+    if (t == T_WHITE)
+	t = yylex();
+    if (t != token)
+	return 0;
+    return strval;
+}
+
+
 typedef struct {
     char *name;
     int token;
+    op_t op;
 } directive_t;
 
+static void
+d_plain(void) {
+    char *id = get_id(T_KEYWORD);
+    int nl = yylex();
+    char **toclear, **last;
+    error(!id || nl != T_NEWLINE, "%%plain directive syntax error");
+    for (toclear = keywords; *toclear; toclear++) {
+	if (!strcmp(*toclear, id)) {
+	    for (last = keywords; *last && *(last + 1); last++)
+		/* do nothing */;
+	    *toclear = *last;
+	    *last = 0;
+	    continue;
+	}
+    }
+    free(id);
+}
+
+
 directive_t directives[] = {
-    {0, 0}
+    {.name = "plain", .token = TD_PLAIN, .op = d_plain},
+    {0, 0, 0}
 };
 
 static int
 lookup_directive(char *name) {
     directive_t *dp;
-    for (dp = directives; dp->name; dp++)
-	if (!strcmp(name, dp->name))
+    for (dp = directives; dp->name; dp++) {
+	if (!strcmp(name, dp->name)) {
+	    opval = dp->op;
 	    return dp->token;
+	}
+    }
     return 0;
 }
 
@@ -185,10 +227,6 @@ string_save(void) {
     return save_string(save);
 }
 
-static char *keywords[] = {
-    "to", "if", "else", "do", "in", "for", "while", 0
-};
-
 static int
 is_keyword(char *word) {
     char **kw;
@@ -206,6 +244,10 @@ format_file(void) {
     output_markdown.begin();
     output_markdown.bol();
     while ((token = yylex()) != 0) {
+	if (token >= T_DIRECTIVE) {
+	    opval();
+	    continue;
+	}
 	for (xp = output_markdown.xlate; xp->token != 0; xp++) {
 	    if (token == xp->token) {
 		xp->op();
