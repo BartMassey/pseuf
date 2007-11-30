@@ -32,7 +32,7 @@
 %option noyywrap
 
 ID [_a-zA-Z][-_a-zA-Z0-9]*
-STUFF [^\"\(\) \t\n]
+STUFF [^\"\(\)_a-zA-Z \t\n]
 
 %%
 
@@ -111,7 +111,7 @@ STUFF [^\"\(\) \t\n]
     return T_NEWLINE;
 }
 
-{STUFF} {
+. {
     BEGIN(STUFF);
     yyless(0);
 }
