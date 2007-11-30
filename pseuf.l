@@ -28,13 +28,15 @@
     
 %x STRING
 %x DIRECTIVE
+%x STUFF
 %option noyywrap
 
 ID [_a-zA-Z][-_a-zA-Z0-9]*
+STUFF [^\"\(\) \t\n]
 
 %%
 
-^\%/.* {
+^\% {
     BEGIN(DIRECTIVE);
 }
 
@@ -109,8 +111,14 @@ ID [_a-zA-Z][-_a-zA-Z0-9]*
     return T_NEWLINE;
 }
 
-[^\"\(\) \t\n]+ {
+{STUFF} {
+    BEGIN(STUFF);
+    yymore();
+}
+
+<STUFF>{STUFF}+ {
     strval = save_string(yytext);
+    BEGIN(0);
     return T_STUFF;
 }
 
