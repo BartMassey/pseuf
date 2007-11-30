@@ -116,7 +116,7 @@ STUFF [^\"\(\) \t\n]
     yyless(0);
 }
 
-<STUFF>{STUFF}+ {
+<STUFF>.{STUFF}* {
     strval = save_string(yytext);
     BEGIN(0);
     return T_STUFF;
