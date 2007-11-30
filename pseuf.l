@@ -113,7 +113,7 @@ STUFF [^\"\(\) \t\n]
 
 {STUFF} {
     BEGIN(STUFF);
-    yymore();
+    yyless(0);
 }
 
 <STUFF>{STUFF}+ {
