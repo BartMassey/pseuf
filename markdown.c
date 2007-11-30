@@ -10,25 +10,25 @@
 #include <stdio.h>
 #include "pseuf.h"
 
-static int out_line = 0;
+static int outline = 0;
 
 static void
 op_begin(void)
 {
-    printf("\n");
+    fprintf(outfile, "\n");
 }
 
 static void
 op_end(void)
 {
-    printf("\n");
+    fprintf(outfile, "\n");
 }
 
 static void
 op_bol(void)
 {
-    out_line++;
-    printf("    ");
+    outline++;
+    fprintf(outfile, "    ");
 }
 
 static void
@@ -36,51 +36,51 @@ op_indent(void)
 {
     int i;
     for (i = 0; i < intval; i++)
-	printf(" ");
+	fprintf(outfile, " ");
 }
 
 static void
 op_ident(void)
 {
-    printf("*%s*", strval);
+    fprintf(outfile, "*%s*", strval);
 }
 
 static void
 op_keyword(void)
 {
-    printf("**%s**", strval);
+    fprintf(outfile, "**%s**", strval);
 }
 
 static void
 op_stuff(void)
 {
-    printf("%s", strval);
+    fprintf(outfile, "%s", strval);
 }
 
 static void
 op_open_expr(void)
 {
     if (nest > 1)
-	printf("(");
+	fprintf(outfile, "(");
 }
 
 static void
 op_close_expr(void)
 {
     if (nest > 0)
-	printf(")");
+	fprintf(outfile, ")");
 }
 
 static void
 op_newline(void)
 {
-    printf("\n");
+    fprintf(outfile, "\n");
 }
 
 static void
 op_white(void)
 {
-    printf(" ");
+    fprintf(outfile, " ");
 }
 
 static xlate_t xlate[] = {

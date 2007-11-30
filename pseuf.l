@@ -166,7 +166,7 @@ is_keyword(char *word) {
 
 
 static void
-format_file(FILE *f) {
+format_file(void) {
     int token;
     xlate_t *xp;
     output_markdown.begin();
@@ -196,7 +196,7 @@ basename(char *name, char *extension) {
 	return name;
     if (!strcmp(suffp + 1, extension)) {
 	char *result = save_string(name);
-	result[strlen(result) - strlen(extension)] = '\0';
+	result[strlen(result) - strlen(extension) - 1] = '\0';
 	return result;
     }
     return 0;
@@ -206,11 +206,10 @@ int
 main(int argc, char **argv) {
     if (argc <= 1) {
 	outfile = stdout;
-	format_file(stdin);
+	format_file();
     } else {
 	int i;
 	for (i = 1; i < argc; i++) {
-	    FILE *f;
 	    char *outfilename;
 	    char *s;
 	    filename = argv[i];
@@ -219,8 +218,8 @@ main(int argc, char **argv) {
 		fprintf(stderr, "%s: bad file extension\n", filename);
 		exit(1);
 	    }
-	    f = fopen(filename, "r");
-	    if (!f) {
+	    yyin = fopen(filename, "r");
+	    if (!yyin) {
 		perror(filename);
 		exit(1);
 	    }
@@ -238,8 +237,10 @@ main(int argc, char **argv) {
 		perror(outfilename);
 		exit(1);
 	    }
-	    format_file(f);
+	    format_file();
 	    free(outfilename);
+	    fclose(yyin);
+	    fclose(outfile);
 	}
     }
     return 0;
