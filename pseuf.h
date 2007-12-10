@@ -19,6 +19,8 @@
 #define T_WHITE 10
 #define T_DIRECTIVE 100
 #define TD_PLAIN 101
+#define TD_IDENT 102
+#define TD_KEYWORD 103
 
 extern int nest;
 extern char *strval;

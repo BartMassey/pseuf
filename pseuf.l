@@ -136,10 +136,8 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
 #include <stdarg.h>
 
 static void
-showmsg(char *prefix, char *fmt, ...)
+showmsg(char *prefix, char *fmt, va_list ap)
 {
-    va_list ap;
-    va_start(ap, fmt);
     fprintf(stderr, "%s:%d: ", filename, line);
     if (prefix)
 	fprintf(stderr, "%s: ", prefix);
@@ -153,16 +151,18 @@ warning(char *fmt, ...)
     va_list ap;
     va_start(ap, fmt);
     showmsg("warning", fmt, ap);
+    va_end(ap);
 }
 
 
 void
 error(int cond, char *fmt, ...)
 {
+    va_list ap;
     if (cond) {
-	va_list ap;
 	va_start(ap, fmt);
 	showmsg(0, fmt, ap);
+	va_end(ap);
 	exit(1);
     }
 }
@@ -181,7 +181,9 @@ static word_t keywords[TABLE_SIZE] = {
     {0, 0}
 };
 
+
 static word_t idents[TABLE_SIZE];
+
 
 static char *
 get_id(int *token) {
@@ -204,16 +206,56 @@ d_plain(void) {
     char *id = get_id(&idt);
     int nl = yylex();
     error(!id || nl != T_NEWLINE, "%%plain directive syntax error");
-    if (idt != T_KEYWORD) {
-	warning("%%plain directive on non-keyword %s", id);
+    if (idt != T_KEYWORD && idt != T_IDENT) {
+	warning("%%plain directive on already plain %s", id);
 	return;
     }
     wordtab_clear(keywords, id);
+    wordtab_clear(idents, id);
     free(id);
 }
 
+
+static void
+d_ident(void) {
+    int idt;
+    word_t word;
+    char *id = get_id(&idt);
+    int nl = yylex();
+    error(!id || nl != T_NEWLINE, "%%ident directive syntax error");
+    if (idt == T_IDENT) {
+	warning("%%ident directive on already ident %s", id);
+	return;
+    }
+    word.word = id;
+    word.data = 0;
+    wordtab_clear(keywords, id);
+    wordtab_insert(idents, &word);
+}
+
+
+static void
+d_keyword(void) {
+    int idt;
+    word_t word;
+    char *id = get_id(&idt);
+    int nl = yylex();
+    error(!id || nl != T_NEWLINE, "%%ident directive syntax error");
+    if (idt == T_KEYWORD) {
+	warning("%%keyword directive on already keyword %s", id);
+	return;
+    }
+    word.word = id;
+    word.data = 0;
+    wordtab_clear(idents, id);
+    wordtab_insert(keywords, &word);
+}
+
+
 static directive_t directive_data[] = {
     {.name = "plain", .token = TD_PLAIN, .op = d_plain},
+    {.name = "ident", .token = TD_IDENT, .op = d_ident},
+    {.name = "keyword", .token = TD_KEYWORD, .op = d_keyword},
     {0, 0, 0}
 };
 
