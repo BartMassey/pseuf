@@ -37,9 +37,13 @@ wordtab_clear(word_t *table, char *word) {
 void
 wordtab_insert(word_t *table, word_t *word) {
     word_t *last;
-    for (last = table; last->word; last++)
+    for (last = table; last->word && !strcmp(last->word, word->word); last++)
 	/* do nothing */;
-    *last++ = *word;
-    last->word = 0;
+    if (last->word) {
+	*last = *word;
+    } else {
+	*last++ = *word;
+	last->word = 0;
+    }
 }
 
