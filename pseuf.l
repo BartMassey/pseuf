@@ -201,11 +201,20 @@ get_id(int *token) {
 
 
 static void
-d_plain(void) {
-    int idt;
-    char *id = get_id(&idt);
-    int nl = yylex();
-    error(!id || nl != T_NEWLINE, "%%plain directive syntax error");
+directive_multiword(char *name, void (*op)(int, char *)) {
+    while (1) {
+	int idt;
+	char *id = get_id(&idt);
+	if (idt == T_NEWLINE)
+	    break;
+	error(!id, "%%%s directive syntax error", name);
+	op(idt, id);
+    }
+}
+
+
+static void
+d_plain(int idt, char *id) {
     if (idt != T_KEYWORD && idt != T_IDENT) {
 	warning("%%plain directive on already plain %s", id);
 	return;
@@ -216,12 +225,8 @@ d_plain(void) {
 
 
 static void
-d_ident(void) {
-    int idt;
+d_ident(int idt, char *id) {
     word_t word;
-    char *id = get_id(&idt);
-    int nl = yylex();
-    error(!id || nl != T_NEWLINE, "%%ident directive syntax error");
     if (idt == T_IDENT) {
 	warning("%%ident directive on already ident %s", id);
 	return;
@@ -234,12 +239,8 @@ d_ident(void) {
 
 
 static void
-d_keyword(void) {
-    int idt;
+d_keyword(int idt, char *id) {
     word_t word;
-    char *id = get_id(&idt);
-    int nl = yylex();
-    error(!id || nl != T_NEWLINE, "%%ident directive syntax error");
     if (idt == T_KEYWORD) {
 	warning("%%keyword directive on already keyword %s", id);
 	return;
@@ -311,7 +312,7 @@ format_file(void) {
     output_markdown.bol();
     while ((token = yylex()) != 0) {
 	if (token >= T_DIRECTIVE) {
-	    dirval->op();
+	    directive_multiword(dirval->name, dirval->op);
 	    continue;
 	}
 	for (xp = output_markdown.xlate; xp->token != 0; xp++) {

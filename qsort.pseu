@@ -1,7 +1,5 @@
-%ident a
-%ident n
-%ident p
-%ident i
+%ident a n p i
+%keyword from
 to qsort an array a:
     n <- dim a
     if n = 1 then return a
