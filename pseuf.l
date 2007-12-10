@@ -268,6 +268,7 @@ init_directives(void) {
     for (dp = directive_data; dp->name; dp++) {
 	tab->word = dp->name;
 	tab->data = dp;
+	tab++;
     }
 }
 
