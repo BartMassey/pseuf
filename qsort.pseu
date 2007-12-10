@@ -1,11 +1,17 @@
-%ident a n p i
+%ident a n i l r
 %keyword from
 to qsort an array a:
     n <- dim a
-    if n = 1 then return a
-    p <- n div 2
-    for i from 1 to p - 1 do
-	if a[i] > a[p] then
-	    exchange a[i] with a[p]
-    qsort a[1 .. p]
-    qsort a[p + 1 .. n]
+    if n <= 1 then return a
+    exchange a[1] with a[n div 2]
+    l <- 2
+    r <- n
+    while l < r
+	if a[l] > a[1] then
+	    exchange a[l] with a[r]
+	    decrement r
+        else
+	    increment l
+    exchange a[1] with a[l]
+    qsort a[1 .. l - 1]
+    qsort a[l + 1 .. n]
