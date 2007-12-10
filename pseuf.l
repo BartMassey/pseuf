@@ -231,6 +231,7 @@ d_ident(void) {
     word.data = 0;
     wordtab_clear(keywords, id);
     wordtab_insert(idents, &word);
+    free(id);
 }
 
 
@@ -249,6 +250,7 @@ d_keyword(void) {
     word.data = 0;
     wordtab_clear(idents, id);
     wordtab_insert(keywords, &word);
+    free(id);
 }
 
 

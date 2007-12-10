@@ -40,7 +40,7 @@ wordtab_insert(word_t *table, word_t *word) {
     word_t *last = table;
     while (last - table < TABLE_SIZE &&
 	   last->word &&
-	   !strcmp(last->word, word->word))
+	   strcmp(last->word, word->word))
 	last++;
     if (last - table >= TABLE_SIZE) {
 	fprintf(stderr, "wordtab: out of memory\n");
@@ -49,7 +49,8 @@ wordtab_insert(word_t *table, word_t *word) {
     if (last->word) {
 	*last = *word;
     } else {
-	*last++ = *word;
+	*last = *word;
+	last++;
 	last->word = 0;
     }
 }
