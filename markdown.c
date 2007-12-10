@@ -58,20 +58,6 @@ op_stuff(void)
 }
 
 static void
-op_open_expr(void)
-{
-    if (nest > 1)
-	fprintf(outfile, "(");
-}
-
-static void
-op_close_expr(void)
-{
-    if (nest > 0)
-	fprintf(outfile, ")");
-}
-
-static void
 op_newline(void)
 {
     fprintf(outfile, "\n");
@@ -88,8 +74,8 @@ static xlate_t xlate[] = {
     {T_IDENT, op_ident},
     {T_KEYWORD, op_keyword},
     {T_WORD, op_stuff},
-    {T_LP, op_open_expr},
-    {T_RP, op_close_expr},
+    {T_LP, op_stuff},
+    {T_RP, op_stuff},
     {T_NEWLINE, op_newline},
     {T_STUFF, op_stuff},
     {T_STRING, op_stuff},

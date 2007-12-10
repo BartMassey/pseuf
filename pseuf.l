@@ -17,7 +17,7 @@
 	op_t op;
     } directive_t;
 
-    static word_t directives[], keywords[];
+    static word_t directives[], keywords[], idents[];
 
     static char *save_string(char *);
     static void string_init(void);
@@ -26,7 +26,6 @@
     int line = 1;
     char *filename = "<stdin>";
     FILE *outfile;
-    int nest = 0;
     char *strval = 0;
     int intval;
     directive_t *dirval;
@@ -86,10 +85,10 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
 
 {ID} {
     strval = save_string(yytext);
-    if (nest > 0)
-	return T_IDENT;
     if (wordtab_search(keywords, yytext))
 	return T_KEYWORD;
+    if (wordtab_search(idents, yytext))
+	return T_IDENT;
     return T_WORD;
 }
 
@@ -99,13 +98,12 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
 }
 
 "(" {
-    nest++;
+    strval = "(";
     return T_LP;
 }
 
 ")" {
-    if (nest > 0)
-	--nest;
+    strval = ")";
     return T_RP;
 }
 
@@ -182,6 +180,8 @@ static word_t keywords[TABLE_SIZE] = {
     {"while", 0},
     {0, 0}
 };
+
+static word_t idents[TABLE_SIZE];
 
 static char *
 get_id(int *token) {
@@ -275,7 +275,7 @@ format_file(void) {
 	for (xp = output_markdown.xlate; xp->token != 0; xp++) {
 	    if (token == xp->token) {
 		xp->op();
-		if (strval)
+		if (strval && xp->token != T_LP && xp->token != T_RP)
 		    free(strval);
 		strval = 0;
 		break;
