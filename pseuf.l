@@ -173,7 +173,9 @@ error(int cond, char *fmt, ...)
 static word_t keywords[TABLE_SIZE] = {
     {"to", 0},
     {"if", 0},
+    {"then", 0},
     {"else", 0},
+    {"return", 0},
     {"do", 0},
     {"in", 0},
     {"for", 0},
