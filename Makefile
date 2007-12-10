@@ -5,15 +5,17 @@
 # Please see the file COPYING in the source
 # distribution of this software for license terms.
 
+OBJS = pseuf.o markdown.o wordtab.o
+
 CFLAGS = -g -Wall
 
-pseuf: pseuf.o markdown.o
-	$(CC) $(CFLAGS) -o pseuf pseuf.o markdown.o
+pseuf: $(OBJS)
+	$(CC) $(CFLAGS) -o pseuf $(OBJS)
 
 pseuf.c: pseuf.l
 	flex -o pseuf.c pseuf.l
 
-pseuf.o markdown.o: pseuf.h
+$(OBJS): pseuf.h
 
 clean:
-	-rm -f markdown.o pseuf.o pseuf pseuf.c
+	-rm -f $(OBJS) pseuf pseuf.c

@@ -11,19 +11,25 @@
 #   include <stdio.h>
 #   include "pseuf.h"
 
+    typedef struct {
+	char *name;
+	int token;
+	op_t op;
+    } directive_t;
+
+    static word_t directives[], keywords[];
+
     static char *save_string(char *);
-    static int is_keyword(char *);
     static void string_init(void);
     static void string_add(char);
     static char * string_save(void);
-    static int lookup_directive(char *);
     int line = 1;
     char *filename = "<stdin>";
     FILE *outfile;
     int nest = 0;
     char *strval = 0;
     int intval;
-    op_t opval;
+    directive_t *dirval;
 %} 
     
 %x STRING
@@ -43,10 +49,11 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
 <DIRECTIVE>[ \t]+   /* do nothing */;
 
 <DIRECTIVE>{ID} {
-    int token = lookup_directive(yytext);
-    error(token == 0, "unknown directive %s", yytext);
+    word_t *dir = wordtab_search(directives, yytext);
+    error(dir == 0, "unknown directive %s", yytext);
+    dirval = dir->data;
     BEGIN(0);
-    return token;
+    return dirval->token;
 }
 
 ^[ \t]* {
@@ -81,7 +88,7 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
     strval = save_string(yytext);
     if (nest > 0)
 	return T_IDENT;
-    if (is_keyword(yytext))
+    if (wordtab_search(keywords, yytext))
 	return T_KEYWORD;
     return T_WORD;
 }
@@ -130,12 +137,6 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
 #include <stdio.h>
 #include <stdarg.h>
 
-
-static char *keywords[] = {
-    "to", "if", "else", "do", "in", "for", "while", 0
-};
-
-
 static void
 showmsg(char *prefix, char *fmt, ...)
 {
@@ -169,6 +170,17 @@ error(int cond, char *fmt, ...)
 }
 
 
+static word_t keywords[TABLE_SIZE] = {
+    {"to", 0},
+    {"if", 0},
+    {"else", 0},
+    {"do", 0},
+    {"in", 0},
+    {"for", 0},
+    {"while", 0},
+    {0, 0}
+};
+
 static char *
 get_id(int *token) {
     *token = yylex();
@@ -184,51 +196,35 @@ get_id(int *token) {
 }
 
 
-typedef struct {
-    char *name;
-    int token;
-    op_t op;
-} directive_t;
-
 static void
 d_plain(void) {
     int idt;
     char *id = get_id(&idt);
     int nl = yylex();
-    char **toclear, **last;
     error(!id || nl != T_NEWLINE, "%%plain directive syntax error");
     if (idt != T_KEYWORD) {
 	warning("%%plain directive on non-keyword %s", id);
 	return;
     }
-    for (toclear = keywords; *toclear; toclear++) {
-	if (!strcmp(*toclear, id)) {
-	    for (last = keywords; *last && *(last + 1); last++)
-		/* do nothing */;
-	    *toclear = *last;
-	    *last = 0;
-	    continue;
-	}
-    }
+    wordtab_clear(keywords, id);
     free(id);
 }
 
-
-directive_t directives[] = {
+static directive_t directive_data[] = {
     {.name = "plain", .token = TD_PLAIN, .op = d_plain},
     {0, 0, 0}
 };
 
-static int
-lookup_directive(char *name) {
+static word_t directives[TABLE_SIZE];
+
+static void
+init_directives(void) {
+    word_t *tab = directives;
     directive_t *dp;
-    for (dp = directives; dp->name; dp++) {
-	if (!strcmp(name, dp->name)) {
-	    opval = dp->op;
-	    return dp->token;
-	}
+    for (dp = directive_data; dp->name; dp++) {
+	tab->word = dp->name;
+	tab->data = dp;
     }
-    return 0;
 }
 
 static char *
@@ -263,16 +259,6 @@ string_save(void) {
     return save_string(save);
 }
 
-static int
-is_keyword(char *word) {
-    char **kw;
-    for (kw = keywords; *kw; kw++)
-	if (!strcmp(*kw, word))
-	    return 1;
-    return 0;
-}
-
-
 static void
 format_file(void) {
     int token;
@@ -281,7 +267,7 @@ format_file(void) {
     output_markdown.bol();
     while ((token = yylex()) != 0) {
 	if (token >= T_DIRECTIVE) {
-	    opval();
+	    dirval->op();
 	    continue;
 	}
 	for (xp = output_markdown.xlate; xp->token != 0; xp++) {
@@ -316,6 +302,7 @@ basename(char *name, char *extension) {
 
 int
 main(int argc, char **argv) {
+    init_directives();
     if (argc <= 1) {
 	outfile = stdout;
 	format_file();

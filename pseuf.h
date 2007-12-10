@@ -47,3 +47,16 @@ typedef struct {
 } output_t;
 
 extern output_t output_markdown;
+
+typedef struct {
+    char *word;
+    void *data;
+} word_t;
+
+#define TABLE_SIZE 1024
+
+extern word_t *
+wordtab_search(word_t *table, char *word);
+
+extern void
+wordtab_clear(word_t *table, char *word);
