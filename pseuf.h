@@ -60,3 +60,6 @@ wordtab_search(word_t *table, char *word);
 
 extern void
 wordtab_clear(word_t *table, char *word);
+
+extern void
+wordtab_insert(word_t *table, word_t *word);
