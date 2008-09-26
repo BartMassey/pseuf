@@ -305,17 +305,17 @@ string_save(void) {
 }
 
 static void
-format_file(void) {
+format_file(output_t *output) {
     int token;
     xlate_t *xp;
-    output_markdown.begin();
-    output_markdown.bol();
+    output->begin();
+    output->bol();
     while ((token = yylex()) != 0) {
 	if (token >= T_DIRECTIVE) {
 	    directive_multiword(dirval->name, dirval->op);
 	    continue;
 	}
-	for (xp = output_markdown.xlate; xp->token != 0; xp++) {
+	for (xp = output->xlate; xp->token != 0; xp++) {
 	    if (token == xp->token) {
 		xp->op();
 		if (strval && xp->token != T_LP && xp->token != T_RP)
@@ -326,9 +326,9 @@ format_file(void) {
 	}
 	assert(xp->token != 0);
 	if (token == T_NEWLINE)
-	    output_markdown.bol();
+	    output->bol();
     }
-    output_markdown.end();
+    output->end();
 }
 
 
@@ -347,10 +347,11 @@ basename(char *name, char *extension) {
 
 int
 main(int argc, char **argv) {
+    output_t *output = &output_markdown_unicode;
     init_directives();
     if (argc <= 1) {
 	outfile = stdout;
-	format_file();
+	format_file(output);
     } else {
 	int i;
 	for (i = 1; i < argc; i++) {
@@ -368,20 +369,20 @@ main(int argc, char **argv) {
 		exit(1);
 	    }
 	    outfilename = malloc(strlen(s) +
-				 strlen(output_markdown.extension) + 1);
+				 strlen(output->extension) + 1);
 	    if (!outfilename) {
 		fprintf(stderr, "%s: out of memory\n", filename);
 		exit(1);
 	    }
 	    strcpy(outfilename, s);
-	    strcat(outfilename, output_markdown.extension);
+	    strcat(outfilename, output->extension);
 	    free(s);
 	    outfile = fopen(outfilename, "w");
 	    if (!outfile) {
 		perror(outfilename);
 		exit(1);
 	    }
-	    format_file();
+	    format_file(output);
 	    free(outfilename);
 	    fclose(yyin);
 	    fclose(outfile);
