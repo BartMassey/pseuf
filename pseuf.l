@@ -361,16 +361,39 @@ basename(char *name, char *extension) {
     return 0;
 }
 
+void
+usage(void) {
+    fprintf(stderr, "pseuf: usage: pseuf [options] <file>.pseu ...\n");
+    fprintf(stderr, "\t--markdown   Format output as markdown (.mdwn)\n");
+    fprintf(stderr, "\t--latex      Format output as LaTeX (.tex)\n");
+}
+
 int
 main(int argc, char **argv) {
+    int i;
     output_t *output = &output_markdown;
     init_directives();
-    if (argc <= 1) {
+    for (i = 1; i < argc; i++) {
+        if (!strcmp(argv[i], "--markdown")) {
+            output = &output_markdown;
+        } else if (!strcmp(argv[i], "--latex")) {
+            output = &output_latex;
+        } else if (!strcmp(argv[i], "--help")) {
+            usage();
+            return 0;
+        } else if (argv[i][0] == '-') {
+            fprintf(stderr, "option %s unknown\n", argv[i]);
+            usage();
+            return 1;
+        } else {
+            break;
+        }
+    }
+    if (i == argc) {
 	outfile = stdout;
 	format_file(output);
     } else {
-	int i;
-	for (i = 1; i < argc; i++) {
+	for (; i < argc; i++) {
 	    char *outfilename;
 	    char *s;
 	    filename = argv[i];
