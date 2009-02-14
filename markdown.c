@@ -11,8 +11,6 @@
 #include <string.h>
 #include "pseuf.h"
 
-static int outline = 0;
-
 static void
 op_begin(void)
 {
@@ -28,14 +26,12 @@ op_end(void)
 static void
 op_bol(void)
 {
-    outline++;
     fprintf(outfile, "> ");
 }
 
 static void
 op_eol(void)
 {
-    outline++;
     fprintf(outfile, "  ");
 }
 

@@ -312,24 +312,28 @@ format_file(output_t *output) {
     int bol = 1;
     int token;
     xlate_t *xp;
-    output->begin();
+    if (output->begin)
+        output->begin();
     while ((token = yylex()) != 0) {
 	if (token >= T_DIRECTIVE) {
 	    directive_multiword(dirval->name, dirval->op);
 	    continue;
 	}
-        if (bol)
+        if (bol && output->bol)
             output->bol();
         bol = 0;
 	for (xp = output->xlate; xp->token != 0; xp++) {
 	    if (token == xp->token) {
                 if (token == T_NEWLINE) {
-                    output->eol();
-                    xp->op();
+                    if (output->eol)
+                        output->eol();
+                    if (xp->op)
+                        xp->op();
                     line++;
                     bol = 1;
                 } else {
-                    xp->op();
+                    if (xp->op)
+                        xp->op();
                 }
 		if (strval && xp->token != T_LP && xp->token != T_RP)
 		    free(strval);
@@ -339,7 +343,8 @@ format_file(output_t *output) {
 	}
 	assert(xp->token != 0);
     }
-    output->end();
+    if (output->end)
+        output->end();
 }
 
 
