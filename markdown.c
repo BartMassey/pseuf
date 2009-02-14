@@ -29,7 +29,7 @@ static void
 op_bol(void)
 {
     outline++;
-    fprintf(outfile, "    ");
+    fprintf(outfile, "> ");
 }
 
 static void
@@ -44,7 +44,7 @@ op_indent(void)
 {
     int i;
     for (i = 0; i < intval; i++)
-	fprintf(outfile, " ");
+	fprintf(outfile, "&nbsp;");
 }
 
 static void
@@ -69,10 +69,13 @@ op_stuff(void)
 static struct {
     char *from, *to;
 } specials[] = {
-    {"->", "→"},
-    {"<-", "←"},
-    {">=", "≥"},
-    {"<=", "≤"},
+    {"<-", "&#8592;"},   /* LEFTWARDS ARROW */
+    {"->", "&#8594;"},   /* RIGHTWARDS ARROW */
+    {"<=", "&#8804;"},   /* LESS-THAN OR EQUAL TO */
+    {">=", "&#8805;"},   /* GREATER-THAN OR EQUAL TO */
+    {">", "&gt;"},
+    {"<", "&lt;"},
+    {"&", "&amp;"},
     {0, 0}
 };
 
