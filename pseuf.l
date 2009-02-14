@@ -309,22 +309,25 @@ string_save(void) {
 
 static void
 format_file(output_t *output) {
+    int bol = 1;
     int token;
     xlate_t *xp;
     output->begin();
-    output->bol();
     while ((token = yylex()) != 0) {
 	if (token >= T_DIRECTIVE) {
 	    directive_multiword(dirval->name, dirval->op);
 	    continue;
 	}
+        if (bol)
+            output->bol();
+        bol = 0;
 	for (xp = output->xlate; xp->token != 0; xp++) {
 	    if (token == xp->token) {
                 if (token == T_NEWLINE) {
                     output->eol();
                     xp->op();
                     line++;
-                    output->bol();
+                    bol = 1;
                 } else {
                     xp->op();
                 }
