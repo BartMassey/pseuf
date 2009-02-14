@@ -37,7 +37,7 @@
 %option noyywrap
 
 ID [_a-zA-Z][-_a-zA-Z0-9]*
-STUFF [^\"\(\)_a-zA-Z \t\n]
+STUFF [^\"\(\)_a-zA-Z \t]
 
 %%
 
@@ -57,10 +57,12 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
 
 ^[ \t]* {
     int i;
-    int indent = yyleng;
+    int indent = 0;
     for (i = 0; i < yyleng; i++)
 	if (yytext[i] == '\t')
-	    indent += 7;
+	    indent += 8 - (indent % 8);
+        else
+            indent++;
     intval = indent;
     return T_INDENT;
 }
@@ -72,10 +74,10 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
 }
 
 <STRING>\\. {
-    string_add(yytext[0]);
+    string_add(yytext[1]);
 }
 
-<STRING>[ \t\n]* {
+<STRING>[ \t]* {
     string_add(' ');
 }
 
@@ -112,7 +114,6 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
 }
 
 \n {
-    line++;
     return T_NEWLINE;
 }
 
@@ -205,8 +206,10 @@ directive_multiword(char *name, void (*op)(int, char *)) {
     while (1) {
 	int idt;
 	char *id = get_id(&idt);
-	if (idt == T_NEWLINE)
+	if (idt == T_NEWLINE) {
+	    line++;
 	    break;
+	}
 	error(!id, "%%%s directive syntax error", name);
 	op(idt, id);
     }
@@ -317,7 +320,14 @@ format_file(output_t *output) {
 	}
 	for (xp = output->xlate; xp->token != 0; xp++) {
 	    if (token == xp->token) {
-		xp->op();
+                if (token == T_NEWLINE) {
+                    output->eol();
+                    xp->op();
+                    line++;
+                    output->bol();
+                } else {
+                    xp->op();
+                }
 		if (strval && xp->token != T_LP && xp->token != T_RP)
 		    free(strval);
 		strval = 0;
@@ -325,8 +335,6 @@ format_file(output_t *output) {
 	    }
 	}
 	assert(xp->token != 0);
-	if (token == T_NEWLINE)
-	    output->bol();
     }
     output->end();
 }

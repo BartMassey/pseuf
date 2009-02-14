@@ -31,6 +31,8 @@ op_bol(void)
     fprintf(outfile, "    ");
 }
 
+static void op_eol(void) { /* do nothing */ }
+
 static void
 op_indent(void)
 {
@@ -88,5 +90,6 @@ output_t output_markdown = {
     .begin = op_begin,
     .end = op_end,
     .bol = op_bol,
+    .eol = op_eol,
     .xlate = xlate
 };

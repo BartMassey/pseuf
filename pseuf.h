@@ -44,7 +44,7 @@ typedef struct {
 
 typedef struct {
     char *extension;
-    op_t begin, end, bol;
+    op_t begin, end, bol, eol;
     xlate_t *xlate;
 } output_t;
 

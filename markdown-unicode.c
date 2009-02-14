@@ -33,6 +33,13 @@ op_bol(void)
 }
 
 static void
+op_eol(void)
+{
+    outline++;
+    fprintf(outfile, "  ");
+}
+
+static void
 op_indent(void)
 {
     int i;
@@ -64,6 +71,8 @@ static struct {
 } specials[] = {
     {"->", "→"},
     {"<-", "←"},
+    {">=", "≥"},
+    {"<=", "≤"},
     {0, 0}
 };
 
@@ -119,5 +128,6 @@ output_t output_markdown_unicode = {
     .begin = op_begin,
     .end = op_end,
     .bol = op_bol,
+    .eol = op_eol,
     .xlate = xlate
 };
