@@ -37,7 +37,7 @@
 %option noyywrap
 
 ID [_a-zA-Z][-_a-zA-Z0-9]*
-STUFF [^\"\(\)_a-zA-Z \t]
+STUFF [^\"\(\)_a-zA-Z \t\n]
 
 %%
 
@@ -122,7 +122,7 @@ STUFF [^\"\(\)_a-zA-Z \t]
     yyless(0);
 }
 
-<STUFF>.{STUFF}* {
+<STUFF>{STUFF}+ {
     strval = save_string(yytext);
     BEGIN(0);
     return T_STUFF;
