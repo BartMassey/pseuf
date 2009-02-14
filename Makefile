@@ -5,7 +5,7 @@
 # Please see the file COPYING in the source
 # distribution of this software for license terms.
 
-OBJS = pseuf.o markdown.o markdown-unicode.o wordtab.o
+OBJS = pseuf.o markdown.o wordtab.o
 
 CFLAGS = -g -Wall
 

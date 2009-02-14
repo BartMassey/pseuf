@@ -358,7 +358,7 @@ basename(char *name, char *extension) {
 
 int
 main(int argc, char **argv) {
-    output_t *output = &output_markdown_unicode;
+    output_t *output = &output_markdown;
     init_directives();
     if (argc <= 1) {
 	outfile = stdout;

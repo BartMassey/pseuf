@@ -8,6 +8,7 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include "pseuf.h"
 
 static int outline = 0;
@@ -31,7 +32,12 @@ op_bol(void)
     fprintf(outfile, "    ");
 }
 
-static void op_eol(void) { /* do nothing */ }
+static void
+op_eol(void)
+{
+    outline++;
+    fprintf(outfile, "  ");
+}
 
 static void
 op_indent(void)
@@ -59,6 +65,38 @@ op_stuff(void)
     fprintf(outfile, "%s", strval);
 }
 
+
+static struct {
+    char *from, *to;
+} specials[] = {
+    {"->", "→"},
+    {"<-", "←"},
+    {">=", "≥"},
+    {"<=", "≤"},
+    {0, 0}
+};
+
+static int
+op_special(void)
+{
+    int i;
+    for (i = 0; specials[i].from != 0; i++) {
+	if (!strcmp(strval, specials[i].from)) {
+	    fprintf(outfile, "%s", specials[i].to);
+	    return 1;
+	}
+    }
+    return 0;
+}
+
+static void
+op_op(void)
+{
+    if (op_special())
+	return;
+    fprintf(outfile, "%s", strval);
+}
+
 static void
 op_newline(void)
 {
@@ -79,7 +117,7 @@ static xlate_t xlate[] = {
     {T_LP, op_stuff},
     {T_RP, op_stuff},
     {T_NEWLINE, op_newline},
-    {T_STUFF, op_stuff},
+    {T_STUFF, op_op},
     {T_STRING, op_stuff},
     {T_WHITE, op_white},
     {0, 0}

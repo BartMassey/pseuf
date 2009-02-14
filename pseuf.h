@@ -49,7 +49,6 @@ typedef struct {
 } output_t;
 
 extern output_t output_markdown;
-extern output_t output_markdown_unicode;
 
 typedef struct {
     char *word;
