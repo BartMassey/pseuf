@@ -30,6 +30,7 @@
     directive_t *dirval;
 %} 
     
+%x COMMENT
 %x STRING
 %x DIRECTIVE
 %x STUFF
@@ -39,6 +40,16 @@ ID [_a-zA-Z][-_a-zA-Z0-9]*
 STUFF [^\"\(\)_a-zA-Z \t\n]
 
 %%
+
+^\%\% {
+    BEGIN(COMMENT);
+}
+
+<COMMENT>.*   /* do nothing */;
+
+<COMMENT>\n {
+    BEGIN(0);
+}
 
 ^\% {
     BEGIN(DIRECTIVE);
