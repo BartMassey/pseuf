@@ -17,7 +17,7 @@
 	op_t op;
     } directive_t;
 
-    static word_t directives[], keywords[], idents[];
+    static word_t directives[];
 
     static char *save_string(char *);
     static void string_init(void);
@@ -169,7 +169,7 @@ error(int cond, char *fmt, ...)
 }
 
 
-static word_t keywords[TABLE_SIZE] = {
+word_t keywords[TABLE_SIZE] = {
     {"to", 0},
     {"if", 0},
     {"then", 0},
@@ -183,7 +183,7 @@ static word_t keywords[TABLE_SIZE] = {
 };
 
 
-static word_t idents[TABLE_SIZE];
+word_t idents[TABLE_SIZE];
 
 
 static char *
@@ -312,6 +312,8 @@ format_file(output_t *output) {
     int bol = 1;
     int token;
     xlate_t *xp;
+    if (output->init)
+        output->init();
     if (output->begin)
         output->begin();
     while ((token = yylex()) != 0) {

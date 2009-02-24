@@ -10,6 +10,12 @@
 #include <stdio.h>
 #include <string.h>
 #include "pseuf.h"
+#include "greek.h"
+
+
+static void
+op_init(void) {
+}
 
 static void
 op_begin(void)
@@ -41,9 +47,25 @@ op_indent(void)
 	fprintf(outfile, "\\>");
 }
 
+/* XXX needs to use a symbol table */
+static int
+ident_special(void)
+{
+    int i;
+    for (i = 0; greek_idents[i].from != 0; i++) {
+	if (!strcmp(strval, greek_idents[i].from)) {
+	    fprintf(outfile, "$\\%s$", greek_idents[i].from);
+	    return 1;
+	}
+    }
+    return 0;
+}
+
 static void
 op_ident(void)
 {
+    if (ident_special())
+        return;
     fprintf(outfile, "{\\em %s}", strval);
 }
 
@@ -122,6 +144,7 @@ static xlate_t xlate[] = {
 
 output_t output_latex = {
     .extension = ".tex",
+    .init = op_init,
     .begin = op_begin,
     .end = op_end,
     .bol = 0,

@@ -10,6 +10,19 @@
 #include <stdio.h>
 #include <string.h>
 #include "pseuf.h"
+#include "greek.h"
+
+
+static void
+op_init(void) {
+    int i;
+    for (i = 0; greek_idents[i].from != 0; i++) {
+        word_t entry;
+        entry.word = greek_idents[i].from;
+        entry.data = greek_idents[i].to;
+        wordtab_insert(idents, &entry);
+    }
+}
 
 static void
 op_begin(void)
@@ -43,9 +56,34 @@ op_indent(void)
 	fprintf(outfile, "&nbsp;");
 }
 
+static int from_utf8(char *s) {
+    int i = 1;
+    int r = (unsigned char)s[0];
+    int m;
+    for (m = 0xc0; (r & m) == m; m <<= 5)
+        r = ((r & ~(m << 1)) << 6) | ((unsigned char)s[i++] & 0x3f);
+    return r & ~(m << 1);
+}
+
+
+
+/* XXX needs to use a symbol table */
+static int
+ident_special(void)
+{
+    word_t *w = wordtab_search(idents, strval);
+    if (w && w->data) {
+        fprintf(outfile, "&#%d;", from_utf8(w->data));
+        return 1;
+    }
+    return 0;
+}
+
 static void
 op_ident(void)
 {
+    if (ident_special())
+        return;
     fprintf(outfile, "*%s*", strval);
 }
 
@@ -64,7 +102,7 @@ op_stuff(void)
 
 static struct {
     char *from, *to;
-} specials[] = {
+} special_ops[] = {
     {"<-", "&#8592;"},   /* LEFTWARDS ARROW */
     {"->", "&#8594;"},   /* RIGHTWARDS ARROW */
     {"<=", "&#8804;"},   /* LESS-THAN OR EQUAL TO */
@@ -75,13 +113,14 @@ static struct {
     {0, 0}
 };
 
+/* XXX needs to use a symbol table */
 static int
 op_special(void)
 {
     int i;
-    for (i = 0; specials[i].from != 0; i++) {
-	if (!strcmp(strval, specials[i].from)) {
-	    fprintf(outfile, "%s", specials[i].to);
+    for (i = 0; special_ops[i].from != 0; i++) {
+	if (!strcmp(strval, special_ops[i].from)) {
+	    fprintf(outfile, "%s", special_ops[i].to);
 	    return 1;
 	}
     }
@@ -124,6 +163,7 @@ static xlate_t xlate[] = {
 
 output_t output_markdown = {
     .extension = ".mdwn",
+    .init = op_init,
     .begin = op_begin,
     .end = op_end,
     .bol = op_bol,

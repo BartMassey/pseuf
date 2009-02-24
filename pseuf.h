@@ -44,7 +44,7 @@ typedef struct {
 
 typedef struct {
     char *extension;
-    op_t begin, end, bol, eol;
+    op_t init, begin, end, bol, eol;
     xlate_t *xlate;
 } output_t;
 
@@ -57,6 +57,8 @@ typedef struct {
 } word_t;
 
 #define TABLE_SIZE 1024
+
+extern word_t keywords[], idents[];
 
 extern word_t *
 wordtab_search(word_t *table, char *word);
