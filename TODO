@@ -1,0 +1,21 @@
+Done when
+* add script and blackboard letters
+* finish mathematical symbols
+* add comment directive
+* put auto-generated notices in output
+* parse arguments by backend fullname
+* write documentation
+
+Soon
+* add superscript and subscript support
+* add controlled indentation support
+* add per-backend arguments
+* add LaTeX "math-first" option
+
+Maybe someday
+* add start and end directives for filter mode
+* add include directive
+* get special symbols from include file
+* add option for BMP-only markdown
+* add direct HTML backend
+* real hash tables
