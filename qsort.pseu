@@ -1,11 +1,10 @@
-%ident a n i l r
-%keyword from
+%ident a l r
 to qsort an array a:
-    n <- dim a
-    if n <= 1 then return a
-    exchange a[1] with a[n div 2]
+    eta <- dim a
+    if eta <= 1 then return a
+    exchange a[1] with a[eta div 2]
     l <- 2
-    r <- n
+    r <- eta
     while l < r
 	if a[l] > a[1] then
 	    exchange a[l] with a[r]
@@ -14,4 +13,4 @@ to qsort an array a:
 	    increment l
     exchange a[1] with a[l]
     qsort a[1 .. l - 1]
-    qsort a[l + 1 .. n]
+    qsort a[l + 1 .. eta]
