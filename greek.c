@@ -1,3 +1,11 @@
+/*
+ * Copyright © 2009 Bart Massey
+ * ALL RIGHTS RESERVED
+ * [This program is licensed under the "3-clause ('new') BSD License"]
+ * Please see the file COPYING in the source
+ * distribution of this software for license terms.
+ */
+
 /* XXX Neither emacs nor vi handles UTF-8 outside the BMP
    properly, so we have to edit the greek -> unicode table
    with gedit.  So we include this rather than inlining it.

@@ -1,7 +1,6 @@
-# Copyright (C) 2007 Bart Massey
+# Copyright © 2009 Bart Massey
 # ALL RIGHTS RESERVED
-# 
-# [This program is licensed under the GPL version 3 or later.]
+# [This program is licensed under the "3-clause ('new') BSD License"]
 # Please see the file COPYING in the source
 # distribution of this software for license terms.
 
@@ -22,6 +21,6 @@ $(BACKEND): greek.h
 
 clean:
 	-rm -f $(OBJS) pseuf pseuf.c
-	-rm -f qsort.aux wrapper.dvi wrapper.aux wrapper.log
 	-rm -f qsort.mdwn qsort.tex
+	-rm -f qsort.aux wrapper.dvi wrapper.aux wrapper.log wrapper.pdf
 	-rm -rf auto
