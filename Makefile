@@ -22,4 +22,5 @@ $(BACKEND): greek.h
 
 clean:
 	-rm -f $(OBJS) pseuf pseuf.c
-	-rm -f qsort.mdwn qsort.tex qsort.aux
+	-rm -f qsort.mdwn qsort.tex
+	-rm -f wrapper.dvi wrapper.aux wrapper.log
