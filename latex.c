@@ -19,24 +19,18 @@ op_init(void) {
     for (i = 0; greek_idents[i].from != 0; i++) {
         word_t entry;
         entry.word = greek_idents[i].from;
-        entry.data = greek_idents[i].latex;
+        entry.data = &greek_idents[i];
         wordtab_insert(idents, &entry);
     }
 }
 
 static void
-op_begin(void)
-{
-    int i;
+op_begin(void) {
     fprintf(outfile, "\\begin{tabbing}\n");
-    for (i = 0; i < 80; i++)
-        fprintf(outfile, "X\\= ");
-    fprintf(outfile, "\\kill\n");
 }
 
 static void
-op_end(void)
-{
+op_end(void) {
     fprintf(outfile, "\\end{tabbing}\n");
 }
 
@@ -50,8 +44,10 @@ static void
 op_indent(void)
 {
     int i;
+    fprintf(outfile, "$");
     for (i = 0; i < intval; i++)
-	fprintf(outfile, "\\>");
+	fprintf(outfile, "~");
+    fprintf(outfile, "$");
 }
 
 /* XXX needs to use a symbol table */
@@ -59,7 +55,10 @@ static int
 ident_special(void)
 {
     word_t *w = wordtab_search(idents, strval);
-    if (w && w->data == 0) {
+    if (w && w->data) {
+        struct greek_map *greek = w->data;
+        if (greek->latex)
+            return 0;
         fprintf(outfile, "$\\%s$", w->word);
         return 1;
     }
