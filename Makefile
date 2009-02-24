@@ -5,7 +5,8 @@
 # Please see the file COPYING in the source
 # distribution of this software for license terms.
 
-OBJS = pseuf.o markdown.o latex.o wordtab.o
+BACKEND = markdown.o latex.o greek.o
+OBJS = pseuf.o wordtab.o $(BACKEND)
 
 CFLAGS = -g -Wall
 
@@ -17,5 +18,8 @@ pseuf.c: pseuf.l
 
 $(OBJS): pseuf.h
 
+$(BACKEND): greek.h
+
 clean:
 	-rm -f $(OBJS) pseuf pseuf.c
+	-rm -f qsort.mdwn qsort.tex qsort.aux
