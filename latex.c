@@ -15,6 +15,13 @@
 
 static void
 op_init(void) {
+    int i;
+    for (i = 0; greek_idents[i].from != 0; i++) {
+        word_t entry;
+        entry.word = greek_idents[i].from;
+        entry.data = greek_idents[i].latex;
+        wordtab_insert(idents, &entry);
+    }
 }
 
 static void
@@ -51,12 +58,10 @@ op_indent(void)
 static int
 ident_special(void)
 {
-    int i;
-    for (i = 0; greek_idents[i].from != 0; i++) {
-	if (!strcmp(strval, greek_idents[i].from)) {
-	    fprintf(outfile, "$\\%s$", greek_idents[i].from);
-	    return 1;
-	}
+    word_t *w = wordtab_search(idents, strval);
+    if (w && w->data == 0) {
+        fprintf(outfile, "$\\%s$", w->word);
+        return 1;
     }
     return 0;
 }
