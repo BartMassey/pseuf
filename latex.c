@@ -28,12 +28,15 @@ op_init(void) {
 
 static void
 op_begin(void) {
+    fprintf(outfile, "%% This pseudocode translated from %s by pseuf\n",
+            filename);
     fprintf(outfile, "\\begin{tabbing}\n");
 }
 
 static void
 op_end(void) {
     fprintf(outfile, "\\end{tabbing}\n");
+    fprintf(outfile, "%% End of pseuf translation of %s\n", filename);
 }
 
 static void

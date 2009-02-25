@@ -29,6 +29,8 @@ op_init(void) {
 static void
 op_begin(void)
 {
+    fprintf(outfile, "<!-- This pseudocode translated from %s by pseuf -->\n",
+            filename);
     fprintf(outfile, "\n");
 }
 
@@ -36,6 +38,7 @@ static void
 op_end(void)
 {
     fprintf(outfile, "\n");
+    fprintf(outfile, "<!-- End of pseuf translation of %s -->\n", filename);
 }
 
 static void
