@@ -6,8 +6,8 @@
  * distribution of this software for license terms.
  */
 
-struct symbol_map {
-    char *from, *to;
-};
+typedef struct {
+    char *from, *to, *latex;
+}  symbol_t;
 
-extern struct symbol_map symbol_idents[];
+extern symbol_t symbols[];

@@ -4,7 +4,7 @@
 # Please see the file COPYING in the source
 # distribution of this software for license terms.
 
-BACKEND = markdown.o latex.o greek.o symbols.o
+BACKEND = markdown.o latex.o symbols.o
 OBJS = pseuf.o wordtab.o $(BACKEND)
 
 CFLAGS = -g -Wall
@@ -17,7 +17,7 @@ pseuf.c: pseuf.l
 
 $(OBJS): pseuf.h
 
-$(BACKEND): greek.h symbols.h
+$(BACKEND): symbols.h
 
 clean:
 	-rm -f $(OBJS) pseuf pseuf.c

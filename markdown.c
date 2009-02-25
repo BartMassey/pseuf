@@ -6,20 +6,23 @@
  * distribution of this software for license terms.
  */
 
+#include <assert.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "pseuf.h"
-#include "greek.h"
+#include "symbols.h"
 
 
 static void
 op_init(void) {
     int i;
-    for (i = 0; greek_idents[i].from != 0; i++) {
-        word_t entry;
-        entry.word = greek_idents[i].from;
-        entry.data = greek_idents[i].to;
-        wordtab_insert(idents, &entry);
+    for (i = 0; symbols[i].from != 0; i++) {
+        word_t *e = malloc(sizeof *e);
+        assert(e);
+        e->word = symbols[i].from;
+        e->data = &symbols[i];
+        wordtab_insert(idents, e);
     }
 }
 
@@ -72,7 +75,8 @@ ident_special(void)
 {
     word_t *w = wordtab_search(idents, strval);
     if (w && w->data) {
-        fprintf(outfile, "&#%d;", from_utf8(w->data));
+        symbol_t *s = w->data;
+        fprintf(outfile, "&#%d;", from_utf8(s->to));
         return 1;
     }
     return 0;
