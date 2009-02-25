@@ -169,6 +169,7 @@ static xlate_t xlate[] = {
 };
 
 output_t output_markdown = {
+    .name = "markdown",
     .extension = ".mdwn",
     .init = op_init,
     .begin = op_begin,

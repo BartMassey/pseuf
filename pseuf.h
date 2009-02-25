@@ -42,6 +42,7 @@ typedef struct {
 } xlate_t;
 
 typedef struct {
+    char *name;
     char *extension;
     op_t init, begin, end, bol, eol;
     xlate_t *xlate;

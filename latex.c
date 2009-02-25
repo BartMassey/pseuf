@@ -152,6 +152,7 @@ static xlate_t xlate[] = {
 };
 
 output_t output_latex = {
+    .name = "latex",
     .extension = ".tex",
     .init = op_init,
     .begin = op_begin,

@@ -373,33 +373,48 @@ basename(char *name, char *extension) {
     return 0;
 }
 
+static output_t *outputs[] = {
+    &output_markdown,
+    &output_latex,
+    0
+};
+
 void
 usage(void) {
+    int i;
     fprintf(stderr, "pseuf: usage: pseuf [options] <file>.pseu ...\n");
-    fprintf(stderr, "\t--markdown   Format output as markdown (.mdwn)\n");
-    fprintf(stderr, "\t--latex      Format output as LaTeX (.tex)\n");
+    for (i = 0; outputs[i]; i++)
+        fprintf(stderr, "\t--%s   Format output as %s (%s)\n",
+                outputs[i]->name, outputs[i]->name,
+                outputs[i]->extension);
 }
 
 int
 main(int argc, char **argv) {
-    int i;
-    output_t *output = &output_markdown;
+    int i, j;
+    output_t *output = outputs[0];
     init_directives();
     for (i = 1; i < argc; i++) {
-        if (!strcmp(argv[i], "--markdown")) {
-            output = &output_markdown;
-        } else if (!strcmp(argv[i], "--latex")) {
-            output = &output_latex;
-        } else if (!strcmp(argv[i], "--help")) {
+        for (j = 0; outputs[j]; j++) {
+            if (strlen(argv[i]) > 2 &&
+                !strncmp(argv[i], "--", 2) &&
+                !strcmp(argv[i] + 2, outputs[j]->name)) {
+                output = outputs[j];
+                break;
+            }
+        }
+        if (outputs[j])
+            continue;
+        if (!strcmp(argv[i], "--help")) {
             usage();
             return 0;
-        } else if (argv[i][0] == '-') {
+        }
+        if (argv[i][0] == '-') {
             fprintf(stderr, "option %s unknown\n", argv[i]);
             usage();
             return 1;
-        } else {
-            break;
         }
+        break;
     }
     if (i == argc) {
 	outfile = stdout;
