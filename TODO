@@ -1,9 +1,9 @@
 Done when
 * add script and blackboard letters
-* finish mathematical symbols
 * put auto-generated notices in output
 * parse arguments by backend fullname
 * write documentation
+* do proper operator specials
 
 Soon
 * add superscript and subscript support
