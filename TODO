@@ -8,6 +8,7 @@ Soon
 * add controlled indentation support
 * add per-backend arguments
 * add LaTeX "math-first" option
+* add BMP greek support option
 
 Maybe someday
 * add start and end directives for filter mode
