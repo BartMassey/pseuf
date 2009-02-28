@@ -1,6 +1,7 @@
 Done when
 * add script and blackboard letters
 * write documentation
+* autotool
 
 Soon
 * add superscript and subscript support
@@ -13,6 +14,5 @@ Maybe someday
 * add start and end directives for filter mode
 * add include directive
 * get special symbols from include file
-* add option for BMP-only markdown
 * add direct HTML backend
 * real hash tables
