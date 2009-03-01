@@ -184,7 +184,6 @@ op_specialchar(void)
         }
         break;
     case 's':
-        break;
         if ('A' <= c && c <= 'Z') {
             int schar = 0x1d4d0;  /* MATHEMATICAL BOLD SCRIPT CAPITAL A */
             fprintf(outfile, "&#%d;", schar + c - 'A');
@@ -196,7 +195,7 @@ op_specialchar(void)
         }
         break;
     }
-    fprintf(stderr, "unknown entity for script character \\%s", strval);
+    fprintf(stderr, "unknown entity for special character \\%s\n", strval);
     fprintf(outfile, "&#%d;", 0xfffd);  /* REPLACEMENT CHARACTER */
 }
 
