@@ -140,7 +140,26 @@ op_white(void)
 static void
 op_specialchar(void)
 {
-    abort();
+    int c = strval[1];
+    switch (strval[0]) {
+    case 's':
+        if ('A' <= c && c <= 'Z') {
+            fprintf(outfile, "$\\cal{%c}$", c);
+            return;
+        }
+        break;
+    case 'b':
+        if ('A' <= c && c <= 'Z') {
+            fprintf(outfile, "$\\mathbb{%c}$", c);
+            return;
+        }
+        break;
+    case 'f':
+        fprintf(outfile, "$\\mathfrak{%c}$", c);
+        return;
+    }
+    fprintf(stderr, "unknown LaTeX for special character \\%s\n", strval);
+    fprintf(outfile, "$?\\hspace{-0.3em}?$");
 }
 
 static xlate_t xlate[] = {

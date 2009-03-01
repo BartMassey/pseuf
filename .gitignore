@@ -21,7 +21,14 @@ pseuf.o
 qsort.mdwn
 specialchars.html
 specialchars.mdwn
+specialchars-wrapper.aux
+specialchars-wrapper.dvi
+specialchars-wrapper.log
+specialchars-wrapper.tex
+specialchars.aux
+specialchars.tex
 specialchars.o
 stamp-h1
 symbols.o
 wordtab.o
+auto/
