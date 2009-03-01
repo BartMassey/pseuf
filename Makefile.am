@@ -21,6 +21,7 @@ $(OBJS): pseuf.h
 $(BACKEND): symbols.h
 
 clean-local:
+	-rm -f pseuf.c
 	-rm -f qsort.mdwn qsort.tex
 	-rm -f qsort.aux wrapper.dvi wrapper.aux wrapper.log wrapper.pdf
 	-rm -rf auto
