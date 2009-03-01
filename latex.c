@@ -137,6 +137,12 @@ op_white(void)
     fprintf(outfile, " ");
 }
 
+static void
+op_specialchar(void)
+{
+    abort();
+}
+
 static xlate_t xlate[] = {
     {T_INDENT, op_indent},
     {T_IDENT, op_ident},
@@ -148,6 +154,7 @@ static xlate_t xlate[] = {
     {T_STUFF, op_op},
     {T_STRING, op_stuff},
     {T_WHITE, op_white},
+    {T_SPECIALCHAR, op_specialchar},
     {0, 0}
 };
 

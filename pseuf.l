@@ -95,6 +95,11 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
     string_add(yytext[0]);
 }
 
+\\[a-z][a-zA-Z] {
+    strval = save_string(&yytext[1]);
+    return T_SPECIALCHAR;
+}
+
 {ID} {
     strval = save_string(yytext);
     if (wordtab_search(keywords, yytext))

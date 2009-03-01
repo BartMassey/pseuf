@@ -12,7 +12,7 @@
 #include <string.h>
 #include "pseuf.h"
 #include "symbols.h"
-
+#include "specialchars.h"
 
 static void
 op_init(void) {
@@ -154,6 +154,52 @@ op_white(void)
     fprintf(outfile, " ");
 }
 
+static void
+op_specialchar(void)
+{
+    int c = strval[1];
+    switch (strval[0]) {
+    case 'b':
+        if ('A' <= c && c <= 'Z') {
+            char *bchar = specialchar_search(specialchar_blackboard, c);
+            if (bchar) {
+                fprintf(outfile, "&#%d;", from_utf8(bchar));
+                return;
+            }
+        } else if ('a' <= c && c <= 'z') {
+            int bchar = 0x1d552;  /* MATHEMATICAL DOUBLE-STRUCK SMALL A */
+            fprintf(outfile, "&#%d;", bchar + c - 'a');
+            return;
+        }
+        break;
+    case 'f':
+        if ('A' <= c && c <= 'Z') {
+            int fchar = 0x1d56c;  /* MATHEMATICAL BOLD FRAKTUR CAPITAL A */
+            fprintf(outfile, "&#%d;", fchar + c - 'A');
+            return;
+        } else if ('a' <= c && c <= 'z') {
+            int fchar = 0x1d586;  /* MATHEMATICAL BOLD FRAKTUR SMALL A */
+            fprintf(outfile, "&#%d;", fchar + c - 'a');
+            return;
+        }
+        break;
+    case 's':
+        break;
+        if ('A' <= c && c <= 'Z') {
+            int schar = 0x1d4d0;  /* MATHEMATICAL BOLD SCRIPT CAPITAL A */
+            fprintf(outfile, "&#%d;", schar + c - 'A');
+            return;
+        } else if ('a' <= c && c <= 'z') {
+            int schar = 0x1d4ea;  /* MATHEMATICAL BOLD SCRIPT SMALL A */
+            fprintf(outfile, "&#%d;", schar + c - 'a');
+            return;
+        }
+        break;
+    }
+    fprintf(stderr, "unknown entity for script character \\%s", strval);
+    fprintf(outfile, "&#%d;", 0xfffd);  /* REPLACEMENT CHARACTER */
+}
+
 static xlate_t xlate[] = {
     {T_INDENT, op_indent},
     {T_IDENT, op_ident},
@@ -165,6 +211,7 @@ static xlate_t xlate[] = {
     {T_STUFF, op_op},
     {T_STRING, op_stuff},
     {T_WHITE, op_white},
+    {T_SPECIALCHAR, op_specialchar},
     {0, 0}
 };
 
