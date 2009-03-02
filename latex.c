@@ -158,7 +158,7 @@ op_specialchar(void)
         fprintf(outfile, "$\\mathfrak{%c}$", c);
         return;
     }
-    fprintf(stderr, "unknown LaTeX for special character \\%s\n", strval);
+    warning("unknown LaTeX for special character \\%s\n", strval);
     fprintf(outfile, "$?\\hspace{-0.3em}?$");
 }
 

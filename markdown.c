@@ -195,7 +195,7 @@ op_specialchar(void)
         }
         break;
     }
-    fprintf(stderr, "unknown entity for special character \\%s\n", strval);
+    warning("unknown entity for special character \\%s\n", strval);
     fprintf(outfile, "&#%d;", 0xfffd);  /* REPLACEMENT CHARACTER */
 }
 
