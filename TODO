@@ -1,5 +1,11 @@
 Done when
 * write documentation
+* investigate and fix markdown buglet: Drupal
+  at least needs underbars backslashed
+* fix latex buglet: last entry in tabbing environment should
+  not have a line terminator.
+* fix buglet: extra blank lines in output should be
+  protected by comments or omitted.
 
 Soon
 * add superscript and subscript support
