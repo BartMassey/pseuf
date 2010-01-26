@@ -1,0 +1,8 @@
+%ident a m n j random
+%keyword from
+To initialize an array a of m randomly shuffled elements:
+   a[0] <- 1
+   for n from 1 to m - 1 do
+       j <- random (1 .. n)
+       a[n] <- a[j]
+       a[j] <- n

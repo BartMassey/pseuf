@@ -1,0 +1,7 @@
+%ident a m n i j random
+%keyword from downto
+To shuffle an array a of m elements:
+   initialize a such that forall i . a[i] <- i
+   for n from m - 1 downto 2 do
+   	 j <- random (1 .. n)
+	 exchange a[j] and a[n]

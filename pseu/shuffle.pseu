@@ -1,0 +1,7 @@
+%ident s i r
+to shuffle a sequence s:
+   for i from 1 to |s|
+       r <- a random element of s
+       s'[i] = r
+       delete r from s
+   return s'
