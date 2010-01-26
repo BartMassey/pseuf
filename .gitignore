@@ -33,3 +33,4 @@ symbols.o
 wordtab.o
 auto/
 comprehensive
+utf8.o

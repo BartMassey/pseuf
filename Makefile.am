@@ -4,13 +4,13 @@
 # Please see the file COPYING in the source
 # distribution of this software for license terms.
 
-BACKEND = markdown.o latex.o symbols.o specialchars.o
+BACKEND = markdown.o latex.o utf8.o symbols.o specialchars.o
 
 pseuf_OBJS = pseuf.o wordtab.o $(BACKEND)
 
 bin_PROGRAMS = pseuf
 
-pseuf_SOURCES = latex.c markdown.c pseuf.h pseuf.l symbols.c \
+pseuf_SOURCES = markdown.c latex.c utf8.c pseuf.h pseuf.l symbols.c \
                 symbols.h wordtab.c specialchars.c specialchars.h
 
 pseuf.c: pseuf.l

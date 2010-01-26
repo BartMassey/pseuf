@@ -381,6 +381,7 @@ basename(char *name, char *extension) {
 static output_t *outputs[] = {
     &output_markdown,
     &output_latex,
+    &output_utf8,
     0
 };
 

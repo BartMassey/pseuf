@@ -51,6 +51,7 @@ typedef struct {
 
 extern output_t output_markdown;
 extern output_t output_latex;
+extern output_t output_utf8;
 
 typedef struct {
     char *word;
