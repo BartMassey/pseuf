@@ -366,7 +366,7 @@ symbol_t symbols[] = {
   {"circleddash", "⊝", 0},
   {"circledcirc", "⊚", 0},
   {"circledast", "⊛", 0},
-  {"hbar", "ℏ", 0},
+  {"hbar", "ħ", 0}, /*HERE*/
   {"hslash", "ℏ", 0},
   {"varsquare", "□", "square"},
   {"blacksquare", "■", 0},
