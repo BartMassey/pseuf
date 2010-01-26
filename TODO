@@ -6,6 +6,8 @@ Done when
   not have a line terminator.
 * fix buglet: extra blank lines in output should be
   protected by comments or omitted.
+* figure out what to do about bad markdown interactions,
+  e.g. numbering
 
 Soon
 * add superscript and subscript support
