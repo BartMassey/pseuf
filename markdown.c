@@ -85,12 +85,30 @@ ident_special(void)
     return 0;
 }
 
+static char *
+subst_prime(char *s) {
+    static char *p = "&#x2032;";
+    static char b[1024];
+    char *t = b;
+    while (*s != '\0' && t < b + sizeof(b) - strlen(p) - 1) {
+        if (*s == '\'') {
+            strcpy(t, p);
+            t += strlen(p);
+        } else {
+            *t++ = *s;
+        }
+        s++;
+    }
+    *t = '\0';
+    return b;
+}
+
 static void
 op_ident(void)
 {
     if (ident_special())
         return;
-    fprintf(outfile, "*%s*", strval);
+    fprintf(outfile, "*%s*", subst_prime(strval));
 }
 
 static void

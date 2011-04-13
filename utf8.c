@@ -68,12 +68,30 @@ ident_special(void)
     return 0;
 }
 
+static char *
+subst_prime(char *s) {
+    static char b[1024];
+    char *t = b;
+    while (*s != '\0' && t < b + sizeof(b) - 4) {
+        if (*s == '\'') {
+            *t++ = 0xe2;
+            *t++ = 0x80;
+            *t++ = 0xb2;
+        } else {
+            *t++ = *s;
+        }
+        s++;
+    }
+    *t = '\0';
+    return b;
+}
+
 static void
 op_ident(void)
 {
     if (ident_special())
         return;
-    fprintf(outfile, "%s", strval);
+    fprintf(outfile, "%s", subst_prime(strval));
 }
 
 static void
