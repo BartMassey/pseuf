@@ -151,7 +151,7 @@ op_newline(void)
 static void
 op_white(void)
 {
-    fprintf(outfile, " ");
+    fprintf(outfile, "&nbsp;");
 }
 
 static void
