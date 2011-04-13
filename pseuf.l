@@ -40,22 +40,13 @@ ID [_a-zA-Z][-_a-zA-Z0-9\']*
 STUFF [^\"\(\)_a-zA-Z \t\n]
 
 %%
-
-^\%\% {
-    BEGIN(COMMENT);
+^\%\%.*\n {
+    /* comment */
 }
 
-<COMMENT>.*   /* do nothing */;
-
-<COMMENT>\n {
-    BEGIN(0);
-}
-
-^\% {
+^\%[ \t]* {
     BEGIN(DIRECTIVE);
 }
-
-<DIRECTIVE>[ \t]+   /* do nothing */;
 
 <DIRECTIVE>{ID} {
     word_t *dir = wordtab_search(directives, yytext);
@@ -63,6 +54,10 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
     dirval = dir->data;
     BEGIN(0);
     return dirval->token;
+}
+
+<DIRECTIVE>. {
+    error(1, "unexpected character in directive");
 }
 
 ^[ \t]* {
@@ -77,6 +72,11 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
     return T_INDENT;
 }
 
+\" {
+    string_init();
+    BEGIN(STRING);
+}
+
 <STRING>\" {
     strval = string_save();
     BEGIN(0);
@@ -87,7 +87,7 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
     string_add(yytext[1]);
 }
 
-<STRING>[ \t]* {
+<STRING>[ \t\n]* {
     string_add(' ');
 }
 
@@ -109,11 +109,6 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
     return T_WORD;
 }
 
-\" {
-    string_init();
-    BEGIN(STRING);
-}
-
 "(" {
     strval = "(";
     return T_LP;
@@ -128,11 +123,7 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
     return T_WHITE;
 }
 
-\n {
-    return T_NEWLINE;
-}
-
-. {
+{STUFF} {
     BEGIN(STUFF);
     yyless(0);
 }
@@ -141,6 +132,15 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
     strval = save_string(yytext);
     BEGIN(0);
     return T_STUFF;
+}
+
+<STUFF>\n {
+    BEGIN(0);
+    return T_NEWLINE;
+}
+
+"\r\n"|"\n" {
+    return T_NEWLINE;
 }
 
 %%
