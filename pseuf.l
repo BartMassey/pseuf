@@ -17,15 +17,17 @@
     } directive_t;
 
     static word_t directives[];
+    static char *comment_symbol;
 
     static char *save_string(char *);
     static void string_init(void);
     static void string_add(char);
     static char * string_save(void);
+
     int line = 1;
     char *filename = "<stdin>";
     FILE *outfile;
-    char *strval = 0;
+    char *strval;
     int intval;
     directive_t *dirval;
 %} 
@@ -129,6 +131,24 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
 }
 
 <STUFF>{STUFF}+ {
+    if (comment_symbol) {
+        int pos = strstr(yytext, comment_symbol);
+        if (pos > 0) {
+            char ch = yytext[pos];
+            yytext[pos] = '\0';
+            strval = save_string(yytext);
+            yytext[pos] = ch;
+            yyless(strlen(strval));
+            return T_STUFF;
+        }
+        if (pos == 0) {
+            strval = save_string(comment_symbol);
+            if (strlen(yytext) == strlen(comment_symbol))
+                BEGIN(0);
+            yyless(strlen(comment_symbol));
+            return T_COMMENT;
+        }
+    }
     strval = save_string(yytext);
     BEGIN(0);
     return T_STUFF;
@@ -148,8 +168,8 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <stdarg.h>
+#include <ctype.h>
 
 static void
 showmsg(char *prefix, char *fmt, va_list ap)
@@ -200,7 +220,6 @@ word_t keywords[TABLE_SIZE] = {
 
 word_t idents[TABLE_SIZE];
 
-
 static char *
 get_id(int *token) {
     *token = yylex();
@@ -230,6 +249,33 @@ directive_multiword(char *name, void (*op)(int, char *)) {
     }
 }
 
+static char *
+get_stuff(void) {
+    int token = yylex();
+    if (token != T_STUFF)
+        return 0;
+    return strval;
+}
+
+static void
+directive_comment(char *name, void (*op)(int, char *)) {
+    char ch, *stp, *stp1;
+    char *stuff = get_stuff();
+    error(!stuff, "%%%s directive syntax error", name);
+    int token = yylex();
+    error(token != T_NEWLINE, "%%%s directive illegal comment symbol", name);
+    while (*stuff && isspace(*stuff))
+        stuff++;
+    for (stp = stuff; *stp && isspace(*stp); stp++)
+        /* do nothing */;
+    ch = *stp;
+    *stp = '\0';
+    for (stp1 = stp; *stp1 && isspace(*stp); stp1++)
+        /* do nothing */;
+    error(*stp1, "%%%s directive whitespace in comment symbol", name);
+    op(T_STUFF, stuff);
+    *stp = ch;
+}
 
 static void
 d_plain(int idt, char *id) {
@@ -269,11 +315,18 @@ d_keyword(int idt, char *id) {
     wordtab_insert(keywords, &word);
 }
 
+static void
+d_comment(int idt, char *str) {
+    if (comment_symbol)
+        free(comment_symbol);
+    comment_symbol = save_string(str);
+}
 
 static directive_t directive_data[] = {
     {.name = "plain", .token = TD_PLAIN, .op = d_plain},
     {.name = "ident", .token = TD_IDENT, .op = d_ident},
     {.name = "keyword", .token = TD_KEYWORD, .op = d_keyword},
+    {.name = "comment", .token = TD_COMMENT, .op = d_comment},
     {0, 0, 0}
 };
 
@@ -333,7 +386,10 @@ format_file(output_t *output) {
         output->begin();
     while ((token = yylex()) != 0) {
 	if (token >= T_DIRECTIVE) {
-	    directive_multiword(dirval->name, dirval->op);
+            if (token == TD_COMMENT)
+                directive_comment(dirval->name, dirval->op);
+            else
+                directive_multiword(dirval->name, dirval->op);
 	    continue;
 	}
         if (bol && output->bol)

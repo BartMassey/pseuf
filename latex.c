@@ -162,6 +162,12 @@ op_specialchar(void)
     fprintf(outfile, "$?\\hspace{-0.3em}?$");
 }
 
+static void
+op_comment(void)
+{
+    fprintf(outfile, "\\hspace*{2em}\verb\"%s\"", strval);
+}
+
 static xlate_t xlate[] = {
     {T_INDENT, op_indent},
     {T_IDENT, op_ident},
@@ -174,6 +180,7 @@ static xlate_t xlate[] = {
     {T_STRING, op_stuff},
     {T_WHITE, op_white},
     {T_SPECIALCHAR, op_specialchar},
+    {T_COMMENT, op_comment},
     {0, 0}
 };
 
