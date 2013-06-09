@@ -132,16 +132,16 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
 
 <STUFF>{STUFF}+ {
     if (comment_symbol) {
-        int pos = strstr(yytext, comment_symbol);
-        if (pos > 0) {
-            char ch = yytext[pos];
-            yytext[pos] = '\0';
+        char *start = strstr(yytext, comment_symbol);
+        if (start > yytext) {
+            char ch = *start;
+            *start = '\0';
             strval = save_string(yytext);
-            yytext[pos] = ch;
+            *start = ch;
             yyless(strlen(strval));
             return T_STUFF;
         }
-        if (pos == 0) {
+        if (start == yytext) {
             strval = save_string(comment_symbol);
             if (strlen(yytext) == strlen(comment_symbol))
                 BEGIN(0);
@@ -252,9 +252,11 @@ directive_multiword(char *name, void (*op)(int, char *)) {
 static char *
 get_stuff(void) {
     int token = yylex();
+    if (token == T_WHITE)
+	token = yylex();
     if (token != T_STUFF)
         return 0;
-    return strval;
+    return yytext;
 }
 
 static void
@@ -264,9 +266,7 @@ directive_comment(char *name, void (*op)(int, char *)) {
     error(!stuff, "%%%s directive syntax error", name);
     int token = yylex();
     error(token != T_NEWLINE, "%%%s directive illegal comment symbol", name);
-    while (*stuff && isspace(*stuff))
-        stuff++;
-    for (stp = stuff; *stp && isspace(*stp); stp++)
+    for (stp = stuff; *stp && !isspace(*stp); stp++)
         /* do nothing */;
     ch = *stp;
     *stp = '\0';

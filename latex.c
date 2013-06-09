@@ -13,6 +13,7 @@
 #include "pseuf.h"
 #include "symbols.h"
 
+static int textstart;
 
 static void
 op_init(void) {
@@ -30,7 +31,8 @@ static void
 op_begin(void) {
     fprintf(outfile, "%% This pseudocode translated from %s by pseuf\n",
             filename);
-    fprintf(outfile, "\\begin{tabbing}\n");
+    fprintf(outfile, "\\begin{tabbing}");
+    textstart = 1;
 }
 
 static void
@@ -43,6 +45,7 @@ static void
 op_eol(void)
 {
     fprintf(outfile, "\\\\");
+    textstart = 1;
 }
 
 static void
@@ -72,6 +75,7 @@ ident_special(void)
 static void
 op_ident(void)
 {
+    textstart = 0;
     if (ident_special())
         return;
     fprintf(outfile, "{\\em %s}", strval);
@@ -80,12 +84,14 @@ op_ident(void)
 static void
 op_keyword(void)
 {
+    textstart = 0;
     fprintf(outfile, "{\\bf %s}", strval);
 }
 
 static void
 op_stuff(void)
 {
+    textstart = 0;
     fprintf(outfile, "%s", strval);
 }
 
@@ -120,6 +126,7 @@ op_special(void)
 static void
 op_op(void)
 {
+    textstart = 0;
     if (op_special())
 	return;
     fprintf(outfile, "$%s$", strval);
@@ -141,6 +148,7 @@ static void
 op_specialchar(void)
 {
     int c = strval[1];
+    textstart = 0;
     switch (strval[0]) {
     case 's':
         if ('A' <= c && c <= 'Z') {
@@ -165,7 +173,10 @@ op_specialchar(void)
 static void
 op_comment(void)
 {
-    fprintf(outfile, "\\hspace*{2em}\verb\"%s\"", strval);
+    if (!textstart)
+        fprintf(outfile, "$~~~~$");
+    fprintf(outfile, "\\verb\"%s\"", strval);
+    textstart = 0;
 }
 
 static xlate_t xlate[] = {

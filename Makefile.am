@@ -4,6 +4,8 @@
 # Please see the file COPYING in the source
 # distribution of this software for license terms.
 
+CFLAGS = -g -Wall -Wno-unused-function
+
 BACKEND = markdown.o latex.o utf8.o symbols.o specialchars.o
 
 pseuf_OBJS = pseuf.o wordtab.o $(BACKEND)
