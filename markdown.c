@@ -14,6 +14,8 @@
 #include "symbols.h"
 #include "specialchars.h"
 
+static int textstart;
+
 static void
 op_init(void) {
     int i;
@@ -32,6 +34,7 @@ op_begin(void)
     fprintf(outfile, "<!-- This pseudocode translated from %s by pseuf -->\n",
             filename);
     fprintf(outfile, "\n");
+    textstart = 1;
 }
 
 static void
@@ -51,6 +54,7 @@ static void
 op_eol(void)
 {
     fprintf(outfile, "  ");
+    textstart = 1;
 }
 
 static void
@@ -106,6 +110,7 @@ subst_prime(char *s) {
 static void
 op_ident(void)
 {
+    textstart = 0;
     if (ident_special())
         return;
     fprintf(outfile, "*%s*", subst_prime(strval));
@@ -114,12 +119,14 @@ op_ident(void)
 static void
 op_keyword(void)
 {
+    textstart = 0;
     fprintf(outfile, "**%s**", strval);
 }
 
 static void
 op_stuff(void)
 {
+    textstart = 0;
     fprintf(outfile, "%s", strval);
 }
 
@@ -155,6 +162,7 @@ op_special(void)
 static void
 op_op(void)
 {
+    textstart = 0;
     if (op_special())
 	return;
     fprintf(outfile, "%s", strval);
@@ -175,6 +183,7 @@ op_white(void)
 static void
 op_specialchar(void)
 {
+    textstart = 0;
     int c = strval[1];
     switch (strval[0]) {
     case 'b':
