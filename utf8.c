@@ -29,7 +29,8 @@ to_utf8(int c) {
         c >>= 6;
         nbytes++;
     }
-    s[nbytes++] = ~0 << (8 - nbytes) | c;
+    s[nbytes] = ~0 << (8 - nbytes) | c;
+    nbytes++;
     s[nbytes] = '\0';
     return s;
 }
