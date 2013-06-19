@@ -217,6 +217,15 @@ op_specialchar(void)
     fprintf(outfile, "&#%d;", 0xfffd);  /* REPLACEMENT CHARACTER */
 }
 
+static void
+op_comment(void)
+{
+    if (!textstart)
+        fprintf(outfile, "&nbsp;&nbsp;&nbsp;");
+    fprintf(outfile, "%s", strval);
+    textstart = 0;
+}
+
 static xlate_t xlate[] = {
     {T_INDENT, op_indent},
     {T_IDENT, op_ident},
@@ -229,6 +238,7 @@ static xlate_t xlate[] = {
     {T_STRING, op_stuff},
     {T_WHITE, op_white},
     {T_SPECIALCHAR, op_specialchar},
+    {T_COMMENT, op_comment},
     {0, 0}
 };
 
