@@ -64,7 +64,7 @@ ident_special(void)
     word_t *w = wordtab_search(idents, strval);
     if (w && w->data) {
         symbol_t *s = w->data;
-        if (s->latex)
+        if (!s->latex)
             return 0;
         fprintf(outfile, "$\\%s$", w->word);
         return 1;
