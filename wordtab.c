@@ -25,8 +25,9 @@ wordtab_clear(word_t *table, char *word) {
     word_t *toclear, *last;
     for (toclear = table; toclear->word; toclear++) {
 	if (!strcmp(toclear->word, word)) {
-	    for (last = toclear; last->word && (last + 1)->word; last++)
-		/* do nothing */;
+	    last = toclear;
+            while ((last + 1)->word)
+	        last++;
 	    *toclear = *last;
 	    last->word = 0;
 	    continue;
