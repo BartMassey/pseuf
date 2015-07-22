@@ -408,8 +408,11 @@ format_file(output_t *output) {
                     if (xp->op)
                         xp->op();
                 }
+/* XXX leak like a sieve until bug is tracked down */
+#if 0
 		if (strval && xp->token != T_LP && xp->token != T_RP)
 		    free(strval);
+#endif
 		strval = 0;
 		break;
 	    }

@@ -47,7 +47,7 @@ wordtab_insert(word_t *table, word_t *word) {
 	exit(1);
     }
     if (last->word) {
-	*last = *word;
+	last->data = word->data;
     } else {
 	*last = *word;
 	last++;
