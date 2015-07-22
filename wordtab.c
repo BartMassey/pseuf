@@ -37,11 +37,11 @@ wordtab_clear(word_t *table, char *word) {
 void
 wordtab_insert(word_t *table, word_t *word) {
     word_t *last = table;
-    while (last - table < TABLE_SIZE &&
+    while (last - table < TABLE_SIZE - 1 &&
 	   last->word &&
 	   strcmp(last->word, word->word))
 	last++;
-    if (last - table >= TABLE_SIZE) {
+    if (last - table >= TABLE_SIZE - 1) {
 	fprintf(stderr, "wordtab: out of memory\n");
 	exit(1);
     }
