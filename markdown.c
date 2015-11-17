@@ -136,6 +136,8 @@ static struct {
 } special_ops[] = {
     {"<-", "&#8592;"},   /* LEFTWARDS ARROW */
     {"->", "&#8594;"},   /* RIGHTWARDS ARROW */
+    {"<->", "&#8596;"},    /* LEFT RIGHT ARROW */
+    {"<-->", "&#10321;"},   /* LONG LEFT RIGHT ARROW */
     {"=/=", "&#8800;"},  /* NOT EQUAL TO */
     {"<=", "&#8804;"},   /* LESS-THAN OR EQUAL TO */
     {">=", "&#8805;"},   /* GREATER-THAN OR EQUAL TO */

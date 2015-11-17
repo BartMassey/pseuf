@@ -102,6 +102,8 @@ static struct {
 } specials[] = {
     {"<-", "$\\leftarrow$"},
     {"->", "$\\rightarrow$"},
+    {"<->", "$\\leftrightarrow$"},
+    {"<-->", "$\\longleftrightarrow$"},
     {"=/=", "$\\ne$"},
     {"<=", "$\\le$"},
     {">=", "$\\ge$"},
