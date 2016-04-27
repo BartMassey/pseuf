@@ -11,6 +11,7 @@ Done when
 * investigate and fix markdown bug: starting with a blank
   line causes everything to come out bold; c.f. blank lines
   above
+* fix stupid latex set bracket handling; should not be operator
 
 Soon
 * add superscript and subscript support
