@@ -52,7 +52,7 @@ op_indent(void)
 {
     int i;
     for (i = 0; i < intval; i++)
-	fprintf(outfile, "  ");
+	fprintf(outfile, " ");
 }
 
 
