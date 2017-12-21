@@ -68,7 +68,7 @@ op_ident(void)
     textstart = 0;
     if (ident_special())
         return;
-    fprintf(outfile, "{\\em %s}", strval);
+    fprintf(outfile, "$%s$", strval);
 }
 
 static void
