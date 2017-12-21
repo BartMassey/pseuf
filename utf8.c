@@ -36,18 +36,6 @@ to_utf8(int c) {
 }
 
 static void
-op_init(void) {
-    int i;
-    for (i = 0; symbols[i].from != 0; i++) {
-        word_t *e = malloc(sizeof *e);
-        assert(e);
-        e->word = symbols[i].from;
-        e->data = &symbols[i];
-        wordtab_insert(idents, e);
-    }
-}
-
-static void
 op_indent(void)
 {
     int i;
@@ -218,7 +206,7 @@ static xlate_t xlate[] = {
 output_t output_utf8 = {
     .name = "utf8",
     .extension = ".txt",
-    .init = op_init,
+    .init = 0,
     .begin = 0,
     .end = 0,
     .bol = 0,

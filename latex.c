@@ -15,17 +15,6 @@
 
 static int textstart;
 
-static void
-op_init(void) {
-    int i;
-    for (i = 0; symbols[i].from != 0; i++) {
-        word_t *e = malloc(sizeof *e);
-        assert(e);
-        e->word = symbols[i].from;
-        e->data = &symbols[i];
-        wordtab_insert(idents, e);
-    }
-}
 
 static void
 op_begin(void) {
@@ -203,7 +192,7 @@ static xlate_t xlate[] = {
 output_t output_latex = {
     .name = "latex",
     .extension = ".tex",
-    .init = op_init,
+    .init = 0,
     .begin = op_begin,
     .end = op_end,
     .bol = 0,

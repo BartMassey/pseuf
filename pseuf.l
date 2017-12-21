@@ -9,6 +9,7 @@
 %{
 #   include <stdio.h>
 #   include "pseuf.h"
+#   include "symbols.h"
 
     typedef struct {
 	char *name;
@@ -376,10 +377,23 @@ string_save(void) {
 }
 
 static void
+symtab_init(void) {
+    int i;
+    for (i = 0; symbols[i].from != 0; i++) {
+        word_t *e = malloc(sizeof *e);
+        assert(e);
+        e->word = symbols[i].from;
+        e->data = &symbols[i];
+        wordtab_insert(idents, e);
+    }
+}
+
+static void
 format_file(output_t *output) {
     int bol = 1;
     int token;
     xlate_t *xp;
+    symtab_init();
     if (output->init)
         output->init();
     if (output->begin)
