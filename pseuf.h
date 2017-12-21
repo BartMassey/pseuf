@@ -18,6 +18,8 @@
 #define T_WHITE 10
 #define T_SPECIALCHAR 11
 #define T_COMMENT 12
+#define T_LC 13
+#define T_RC 14
 #define T_DIRECTIVE 100
 #define TD_PLAIN 101
 #define TD_IDENT 102

@@ -122,6 +122,16 @@ STUFF [^\"\(\)_a-zA-Z \t\n]
     return T_RP;
 }
 
+"{" {
+    strval = "{";
+    return T_LC;
+}
+
+"}" {
+    strval = "}";
+    return T_RC;
+}
+
 [ \t]+ {
     return T_WHITE;
 }

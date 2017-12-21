@@ -85,6 +85,12 @@ op_stuff(void)
     fprintf(outfile, "%s", strval);
 }
 
+static void
+op_curly(void)
+{
+    textstart = 0;
+    fprintf(outfile, "\\%s", strval);
+}
 
 static struct {
     char *from, *to;
@@ -180,6 +186,8 @@ static xlate_t xlate[] = {
     {T_WORD, op_stuff},
     {T_LP, op_stuff},
     {T_RP, op_stuff},
+    {T_LC, op_curly},
+    {T_RC, op_curly},
     {T_NEWLINE, op_newline},
     {T_STUFF, op_op},
     {T_STRING, op_stuff},

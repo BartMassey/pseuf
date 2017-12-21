@@ -195,6 +195,8 @@ static xlate_t xlate[] = {
     {T_WORD, op_stuff},
     {T_LP, op_stuff},
     {T_RP, op_stuff},
+    {T_LC, op_stuff},
+    {T_RC, op_stuff},
     {T_NEWLINE, op_newline},
     {T_STUFF, op_op},
     {T_STRING, op_stuff},
