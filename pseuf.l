@@ -14,7 +14,7 @@
     typedef struct {
 	char *name;
 	int token;
-	op_t op;
+	directive_op_t op;
     } directive_t;
 
     static word_t directives[];
@@ -247,7 +247,7 @@ get_id(int *token) {
 
 
 static void
-directive_multiword(char *name, void (*op)(int, char *)) {
+directive_multiword(char *name, directive_op_t op) {
     while (1) {
 	int idt;
 	char *id = get_id(&idt);
@@ -271,7 +271,7 @@ get_stuff(void) {
 }
 
 static void
-directive_comment(char *name, void (*op)(int, char *)) {
+directive_comment(char *name, directive_op_t op) {
     char ch, *stp, *stp1;
     char *stuff = get_stuff();
     error(!stuff, "%%%s directive syntax error", name);

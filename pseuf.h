@@ -39,7 +39,8 @@ warning(char *fmt, ...);
 extern void
 error(int cond, char *fmt, ...);
 
-typedef void (*op_t)();
+typedef void (*op_t)(void);
+typedef void (*directive_op_t)(int, char *);
 
 typedef struct {
     int token;
