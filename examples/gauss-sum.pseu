@@ -1,0 +1,6 @@
+%ident i n end_sum
+To add the numbers from 1 to n:
+  end_sum <- 0
+  for i from 1 to n do
+    end_sum <- end_sum + i
+  return end_sum

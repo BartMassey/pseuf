@@ -1,5 +1,0 @@
-%ident answer_to_life my_variable
-function compute_answer()
-    answer_to_life <- 42
-    my_variable <- answer_to_life
-    return my_variable
