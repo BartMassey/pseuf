@@ -65,10 +65,18 @@ ident_special(void)
 static void
 op_ident(void)
 {
+    char *p;
     textstart = 0;
     if (ident_special())
         return;
-    fprintf(outfile, "$%s$", strval);
+    fprintf(outfile, "$");
+    for (p = strval; *p; p++) {
+        if (*p == '_')
+            fprintf(outfile, "\\_");
+        else
+            fprintf(outfile, "%c", *p);
+    }
+    fprintf(outfile, "$");
 }
 
 static void
