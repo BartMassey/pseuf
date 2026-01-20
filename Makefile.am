@@ -23,5 +23,4 @@ $(OBJS): pseuf.h
 $(BACKEND): symbols.h
 
 clean-local:
-	-rm -f pseuf.c
 	-rm -rf auto

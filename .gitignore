@@ -16,7 +16,6 @@ config.status
 latex.o
 markdown.o
 pseuf
-pseuf.c
 pseuf.o
 qsort.mdwn
 specialchars.html
