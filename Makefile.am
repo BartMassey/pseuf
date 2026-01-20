@@ -4,7 +4,7 @@
 # Please see the file COPYING in the source
 # distribution of this software for license terms.
 
-CFLAGS = -g -Wall -Wno-unused-function
+AM_CFLAGS = -g -Wall -Wno-unused-function
 
 BACKEND = markdown.o latex.o utf8.o symbols.o specialchars.o
 
@@ -24,6 +24,4 @@ $(BACKEND): symbols.h
 
 clean-local:
 	-rm -f pseuf.c
-	-rm -f qsort.mdwn qsort.tex
-	-rm -f qsort.aux wrapper.dvi wrapper.aux wrapper.log wrapper.pdf
 	-rm -rf auto
