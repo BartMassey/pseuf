@@ -7,8 +7,9 @@
  */
 
 #include <assert.h>
-#include <stdlib.h>
+#include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "pseuf.h"
 #include "symbols.h"
@@ -159,22 +160,26 @@ op_specialchar(void)
     textstart = 0;
     switch (strval[0]) {
     case 's':
-        if ('A' <= c && c <= 'Z') {
+        if (isupper(c)) {
             fprintf(outfile, "$\\cal{%c}$", c);
             return;
         }
         break;
     case 'b':
-        if ('A' <= c && c <= 'Z') {
+        if (isupper(c)) {
             fprintf(outfile, "$\\mathbb{%c}$", c);
             return;
         }
         break;
     case 'f':
-        fprintf(outfile, "$\\mathfrak{%c}$", c);
-        return;
+        if (isalpha(c)) {
+            fprintf(outfile, "$\\mathfrak{%c}$", c);
+            return;
+        }
+        break;
     }
-    warning("unknown LaTeX for special character \\%s\n", strval);
+
+    warning("unknown LaTeX special character \\%s\n", strval);
     fprintf(outfile, "$?\\hspace{-0.3em}?$");
 }
 
