@@ -69,14 +69,14 @@ op_ident(void)
     textstart = 0;
     if (ident_special())
         return;
-    fprintf(outfile, "$");
+    fprintf(outfile, "$\\textit{");
     for (p = strval; *p; p++) {
         if (*p == '_')
             fprintf(outfile, "\\_");
         else
             fprintf(outfile, "%c", *p);
     }
-    fprintf(outfile, "$");
+    fprintf(outfile, "}$");
 }
 
 static void
